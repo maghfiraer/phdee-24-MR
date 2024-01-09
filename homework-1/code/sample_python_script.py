@@ -16,7 +16,7 @@ import statsmodels.api as sm
 
 # Set working directories and seed
 
-outputpath = r'C:\Users\brewe\Dropbox (Personal)\teaching\Courses\BrewerPhDEnv\Homeworks\phdee-2024-db\homework1\sample_code\output'
+outputpath = r'C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-1\output'
 # Normally I will also have a datapath where I store the original data if I am working on a small enough csv file.
 
 np.random.seed(6578103)
