@@ -1,4 +1,5 @@
-* Sample Stata code -- Dylan Brewer
+* Sample Stata code -- initially by Dylan Brewer
+* Modified by Maghfira Ramadhani to match his workflow
 
 * Start by clearing everything
 

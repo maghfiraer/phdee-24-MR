@@ -61,15 +61,15 @@ col0.index = rownames
 col0.columns = pd.MultiIndex.from_tuples(colnames)
 
 ## Output to LaTeX folder
-os.chdir(outputpath) # Output directly to LaTeX folder
+# os.chdir(outputpath) # Output directly to LaTeX folder
 
-col0.to_latex('samplemeantable.tex') # Note you would have to stitch together multiple series into a dataframe to have multiple columns
+col0.to_latex(outputpath + '/table/samplemeantable.tex') # Note you would have to stitch together multiple series into a dataframe to have multiple columns
 
 # Plot a histogram of the outcome variable -----------------------------------
 sns.displot(yvar,kind='kde',legend = False)
 plt.xlabel('Outcome variable')
 plt.legend(labels = ['Distribution of outcome variable'],loc = 'best',bbox_to_anchor = (0.75,-0.1))
-plt.savefig('samplehist.pdf',format='pdf') # I suggest saving to .pdf for highest quality
+plt.savefig(outputpath + '/figure/samplehist.pdf',format='pdf') # I suggest saving to .pdf for highest quality
 plt.show()
 
 # Fit a linear regression model to the data ----------------------------------
@@ -124,7 +124,7 @@ output.index = rownames
 output.columns = colnames
 
 ## Output directly to LaTeX
-output.to_latex('sampleoutput.tex')
+output.to_latex(outputpath + '/table/sampleoutput.tex')
 
 # Plot regression output with error bars -------------------------------------
 lowbar = np.array(betaols - lb)
@@ -134,5 +134,5 @@ plt.ylabel('Coefficient estimate')
 plt.xticks(np.arange(params),['Constant', 'Variable 1', 'Variable 2'])
 plt.xlim((-0.5,2.5)) # Scales the figure more nicely
 plt.axhline(linewidth=2, color='r')
-plt.savefig('samplebars.pdf',format='pdf')
+plt.savefig(outputpath + '/figure/samplebars.pdf',format='pdf')
 plt.show()
