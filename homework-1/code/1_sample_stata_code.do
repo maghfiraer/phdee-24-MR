@@ -1,27 +1,16 @@
+*********************************************************************************
+* AUTHOR		: MAGHFIRA RAMADHANI											*
+* PROJECT		: HOMEWORK 1													*
+* COURSE		: ECON7103 Environmental Economics II							*
+* DESCRIPTION	: Modified stata code											*
+* INPUT			: NA	    													*
+* OUTPUT		: .\output\table, .\output\figure								*
+* STATA VERSION	: Stata/MP 18.0													*
+*********************************************************************************
+
 * Sample Stata code -- initially by Dylan Brewer
 * Modified by Maghfira Ramadhani to match his workflow
-
-* Start by clearing everything
-
-	clear all // Note that in Stata, tabs don't mean anything, so I use them to organize nested parts of code to keep things looking clean.
-	set more off // Prevents you from having to click more to see more output
-
-* Set up your working directories
-
-	* local datapath = "C:\Users\brewe\Dropbox (Personal)\teaching\Courses\BrewerPhDEnv\Homeworks\phdee-2024-db\homework1" // Typically, where you keep the data and where you want the outputs to go will be different.  In this sample code, this is not the case so I don't specify a data path.
-	local outputpath = "C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-1\output" 
 	
-	cd "`outputpath'"
-	
-* Download and use plotplainblind scheme
-
-	ssc install blindschemes, all
-	set scheme plotplainblind, permanently
-	
-* ON IAC VLAB server, you will need to uncomment this line and run this:
-
-	*sysdir set PERSONAL \\iac.nas.gatech.edu\dbrewer30
-
 * Generate some random data
 
 	set seed 3709
@@ -49,7 +38,7 @@
 	
 	* Generate the LaTeX table using esttab in this case
 	
-		esttab summary using summarystats.tex, tex cells(mean(fmt(2) label(Mean)) sd(fmt(2) par label(Std. Dev.))) replace label
+		esttab summary using "$table_path\summarystats.tex", tex cells(mean(fmt(2) label(Mean)) sd(fmt(2) par label(Std. Dev.))) replace label
 	
 	*Stata has some really nice ways to create LaTeX tables quickly and easily.  Format here, not in LaTeX--this saves time in the long run.
 	
@@ -57,7 +46,7 @@
 * Kernel density twoway plot
 
 	twoway (kdensity yvar, xtitle(Outcome variable) legend(on order(1 "Outcome variable")))
-	graph export statadensity.pdf, replace
+	graph export "$figure_path\statadensity.pdf", replace
 	
 ********************************************************************************
 * Fit linear regression model
@@ -119,12 +108,12 @@
 		
 	* Write a table using outreg2
 	
-		outreg2 [bootreg] using sampleoutput_stata.tex, label 2aster tex(frag) dec(2) replace ctitle("Ordinary least squares")
+		outreg2 [bootreg] using "$table_path\sampleoutput_stata.tex", label 2aster tex(frag) dec(2) replace ctitle("Ordinary least squares")
 		
 * Plot coefficients using coefplot
 	
 	coefplot, vertical yline(0) rename(_cons = "Constant") ytitle("Coefficient estimate")
 	
-	graph export samplebars_stata.pdf, replace
+	graph export "$figure_path\samplebars_stata.pdf", replace
 	
 	

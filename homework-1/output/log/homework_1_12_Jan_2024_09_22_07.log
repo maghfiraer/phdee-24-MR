@@ -1,8 +1,8 @@
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-1\output\log\homework_1_11_Jan_2024_21_53_18.log
+       log:  C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-1\output\log\homework_1_12_Jan_2024_09_22_07.log
   log type:  text
- opened on:  11 Jan 2024, 21:53:18
+ opened on:  12 Jan 2024, 09:22:07
 
 . 
 . *********************************************************************************
@@ -15,41 +15,19 @@ end of do-file
 . 
 .         do "$code_path\1_sample_stata_code.do"
 
+. *********************************************************************************
+. * AUTHOR                : MAGHFIRA RAMADHANI                                                                                    *
+. * PROJECT               : HOMEWORK 1                                                                                                    *
+. * COURSE                : ECON7103 Environmental Economics II                                                   *
+. * DESCRIPTION   : Modified stata code                                                                                   *
+. * INPUT                 : NA                                                                                                            *
+. * OUTPUT                : .\output\table, .\output\figure                                                               *
+. * STATA VERSION : Stata/MP 18.0                                                                                                 *
+. *********************************************************************************
+. 
 . * Sample Stata code -- initially by Dylan Brewer
 . * Modified by Maghfira Ramadhani to match his workflow
-. 
-. * Start by clearing everything
-. 
-.         clear all // Note that in Stata, tabs don't mean anything, so I use them to organize nested parts of code to keep things looking clean.
-
-.         set more off // Prevents you from having to click more to see more output
-
-. 
-. * Set up your working directories
-. 
-.         * local datapath = "C:\Users\brewe\Dropbox (Personal)\teaching\Courses\BrewerPhDEnv\Homeworks\phdee-2024-db\homework1" // Typically, where you keep the data and where you want the outputs to go will be different.  In this sample code, this is no
-> t the case so I don't specify a data path.
-.         local outputpath = "C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-1\output" 
-
 .         
-.         cd "`outputpath'"
-C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-1\output
-
-.         
-. * Download and use plotplainblind scheme
-. 
-.         ssc install blindschemes, all
-checking blindschemes consistency and verifying not already installed...
-all files already exist and are up to date.
-
-.         set scheme plotplainblind, permanently
-(set scheme preference recorded)
-
-.         
-. * ON IAC VLAB server, you will need to uncomment this line and run this:
-. 
-.         *sysdir set PERSONAL \\iac.nas.gatech.edu\dbrewer30
-. 
 . * Generate some random data
 . 
 .         set seed 3709
@@ -95,9 +73,8 @@ Number of observations (_N) was 0, now 100.
 .         
 .         * Generate the LaTeX table using esttab in this case
 .         
-.                 esttab summary using summarystats.tex, tex cells(mean(fmt(2) label(Mean)) sd(fmt(2) par label(Std. Dev.))) replace label
-(file summarystats.tex not found)
-(output written to summarystats.tex)
+.                 esttab summary using "$table_path\summarystats.tex", tex cells(mean(fmt(2) label(Mean)) sd(fmt(2) par label(Std. Dev.))) replace label
+(output written to C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-1\output\table\summarystats.tex)
 
 .         
 .         *Stata has some really nice ways to create LaTeX tables quickly and easily.  Format here, not in LaTeX--this saves time in the long run.
@@ -107,8 +84,8 @@ Number of observations (_N) was 0, now 100.
 . 
 .         twoway (kdensity yvar, xtitle(Outcome variable) legend(on order(1 "Outcome variable")))
 
-.         graph export statadensity.pdf, replace
-file statadensity.pdf saved as PDF format
+.         graph export "$figure_path\statadensity.pdf", replace
+file C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-1\output\figure\statadensity.pdf saved as PDF format
 
 .         
 . ********************************************************************************
@@ -16245,8 +16222,8 @@ Number of observations (_N) was 100, now 1,000.
 .                 
 .         * Write a table using outreg2
 .         
-.                 outreg2 [bootreg] using sampleoutput_stata.tex, label 2aster tex(frag) dec(2) replace ctitle("Ordinary least squares")
-sampleoutput_stata.tex
+.                 outreg2 [bootreg] using "$table_path\sampleoutput_stata.tex", label 2aster tex(frag) dec(2) replace ctitle("Ordinary least squares")
+C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-1\output\table\sampleoutput_stata.tex
 dir : seeout
 
 .                 
@@ -16255,8 +16232,8 @@ dir : seeout
 .         coefplot, vertical yline(0) rename(_cons = "Constant") ytitle("Coefficient estimate")
 
 .         
-.         graph export samplebars_stata.pdf, replace
-file samplebars_stata.pdf saved as PDF format
+.         graph export "$figure_path\samplebars_stata.pdf", replace
+file C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-1\output\figure\samplebars_stata.pdf saved as PDF format
 
 .         
 .         
@@ -16267,16 +16244,3 @@ end of do-file
 . *********************************************************************************
 . * Run the given Python code
 . 
-.         python script "$code_path\2_sample_python_script.py"
-Traceback (most recent call last):
-  File "C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-1\code\2_sample_python_script.py", line 6, in <module>
-    get_ipython().magic('reset -sf')
-    ^^^^^^^^^^^^^^^^^^^
-AttributeError: 'NoneType' object has no attribute 'magic'
-failed to execute the specified Python script file
-r(7103);
-
-end of do-file
-
-r(7103);
-

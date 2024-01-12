@@ -20,9 +20,15 @@ matrix drop _all
 * Setup the profile of your machine
 
 	* Select option to install Stata packages (list package in profile.do)
-	global install_stata_packages 0 // Set to 1 for first time running
+	
+	global install_stata_packages 0 // Set to 1 for first time running, 0 o/w
+	
+	* Select option to export log
+	
+	global export_log 0 // Set to 1 if you want to export log, 0 o/w
 
 	* Set the location of project directory location
+	
 	global path "C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-1"
 	*global data_path "$path\data"
 	*global temp_path "$path\temp"
@@ -30,11 +36,17 @@ matrix drop _all
 	global table_path "$path\output\table" 
 	global figure_path "$path\output\figure"
 
+	* ON IAC VLAB server, you will need to uncomment this line and run this:
+	*sysdir set PERSONAL \\iac.nas.gatech.edu\mramadhani3
+
 	* Set the location of Python and R executable
+	
 	global RSCRIPT_PATH "C:\Program Files\R\R-4.2.2\bin\x64\Rscript.exe"
 	global py_path "C:\Users\mramadhani3\AppData\Local\anaconda3\python.exe"
+	global py_user_path "c:\Users\mramadhani3\AppData\Local\anaconda3\Lib\site-packages"
 
 	* Set machine profile
+	
 	do "$code_path\0_profile.do"
 
 *********************************************************************************
@@ -44,11 +56,16 @@ matrix drop _all
 
 *********************************************************************************
 * Run the given Python code
-
-	python script "$code_path\2_sample_python_script.py"
+	
+	* You can run the python code externally or directly from inside this do file
+	* If you want to run the python from Stata directly, you will need to:
+	* 1. Comment some lines in .py (line 6,7,74, and 139), otherwise uncomment
+	* 2. Uncomment line 64 below, otherwise comment
+	
+	*python script "$code_path\2_sample_python_script.py"
 
 *********************************************************************************
-
-log close
-clear
-exit
+* End of code
+if $export_log == 1{
+	log close
+	}

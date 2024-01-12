@@ -48,20 +48,23 @@
 *********************************************************************************
 * Setting graphic scheme
 
-	graph set window fontface "Times New Roman"
+	*graph set window fontface "Times New Roman"
 	set scheme plotplainblind, permanently
 
 *********************************************************************************
 * Setting the location of R and python executable
 
 	python set exec "$py_path", permanently
+	python set userpath "$py_user_path", permanently
 
 *********************************************************************************
 * Create log file
-
-	local c_time_date = "`c(current_date)'"+"_" +"`c(current_time)'"
-	local time_string = subinstr("`c_time_date'", ":", "_", .)
-	local time_string = subinstr("`time_string'", " ", "_", .)
-	log using "$path\output\log\homework_1_`time_string'.log", replace
+	
+	if $export_log == 1{
+		local c_time_date = "`c(current_date)'"+"_" +"`c(current_time)'"
+		local time_string = subinstr("`c_time_date'", ":", "_", .)
+		local time_string = subinstr("`time_string'", " ", "_", .)
+		log using "$path\output\log\homework_1_`time_string'.log", replace
+		}
 
 *********************************************************************************

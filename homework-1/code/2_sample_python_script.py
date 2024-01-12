@@ -1,9 +1,10 @@
-# Sample code to get you started -- Dylan Brewer
+# Sample code to get you started -- initially by Dylan Brewer
+# Modified by Maghfira Ramadhani to match his workflow, turn off showing plots.
 
-# Clear all
+# Uncomment line 6, 7, 74, 139 if you want to run the code through IDE (i.e Spyder or VS Code, etc.)
 
-from IPython import get_ipython
-get_ipython().magic('reset -sf')
+#from IPython import get_ipython
+#get_ipython().magic('reset -sf')
 
 # Import packages - you may need to type "conda install numpy" the first time you use a package, for example.
 
@@ -70,7 +71,7 @@ sns.displot(yvar,kind='kde',legend = False)
 plt.xlabel('Outcome variable')
 plt.legend(labels = ['Distribution of outcome variable'],loc = 'best',bbox_to_anchor = (0.75,-0.1))
 plt.savefig(outputpath + '/figure/samplehist.pdf',format='pdf') # I suggest saving to .pdf for highest quality
-plt.show()
+#plt.show()
 
 # Fit a linear regression model to the data ----------------------------------
 ## Using statsmodels
@@ -135,4 +136,4 @@ plt.xticks(np.arange(params),['Constant', 'Variable 1', 'Variable 2'])
 plt.xlim((-0.5,2.5)) # Scales the figure more nicely
 plt.axhline(linewidth=2, color='r')
 plt.savefig(outputpath + '/figure/samplebars.pdf',format='pdf')
-plt.show()
+#plt.show()
