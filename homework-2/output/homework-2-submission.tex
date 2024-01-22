@@ -1,0 +1,81 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage[letterpaper, portrait, margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\hypersetup{
+colorlinks=true,
+    linkcolor=black,
+    filecolor=black,      
+    urlcolor=blue,
+    citecolor=black,
+}
+\usepackage{natbib}
+
+\usepackage{titlesec}
+\bibliographystyle{chicago}
+\newcommand{\bib}{references.bib}
+
+\newcommand\iid{\stackrel{\mathclap{iid}}{\sim}}
+\newcommand\asym{\stackrel{\mathclap{a}}{\sim}}
+\newcommand\convprob{\xrightarrow{p}}
+\newcommand\convdist{\xrightarrow{d}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\E}{\text{E}}
+\newcommand{\V}{\text{Var}}
+\newcommand{\Av}{\text{Avar}}
+\newcommand{\se}{\text{se}}
+\newcommand{\corr}{\text{Corr}}
+\newcommand{\cov}{\text{Cov}}
+\newcommand{\norm}{\text{Normal}}
+\newcommand{\indep}{\perp \!\!\! \perp}
+
+\begin{document}
+% The tex content below is similar to the given main.tex
+ 
+\title{Homework 2}
+\author{Environmental Economics II\\
+Maghfira Ramadhani}
+\date{\today}
+\maketitle
+
+\section{Python part}
+\subsection{Balance table}
+
+\begin{table}[H]
+    \centering
+    \input{./table/table1.tex}
+    \caption{Balance table. Abc}
+    \label{t1:balance}
+\end{table}
+
+\subsection{Graphical evidence}
+
+\begin{figure}[H]
+    \centering
+    \caption{Density plot of electricity consumption}
+    \label{f1:hist}
+    \includegraphics[scale = 0.6]{./figure/2_hist.pdf}
+\end{figure}
+
+\subsection{OLS regression}
+
+\begin{table}[H]
+    \centering
+    \caption{OLS estimates for different computation methods}
+    \label{t3:ols}
+    \input{./table/ols.tex}
+\end{table}
+
+
+\cite{zm2009}
+
+\bibliography{\bib}
+
+\end{document}
