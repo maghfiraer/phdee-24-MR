@@ -41,7 +41,7 @@ t_stats = pd.Series(t_stats, index = retro.columns)
 
 ## Set the row and column names
 rownames = pd.concat([pd.Series(['Electricity','Square feet of home','Outdoor average temperature', 'Observations']),
-                      pd.Series([' ',' ',' '])],axis = 1).stack() # Note this stacks an empty list to make room for stdevs
+                    pd.Series([' ',' ',' '])],axis = 1).stack() # Note this stacks an empty list to make room for stdevs
 
 ## Format means and std devs to display to two decimal places
 means_control = means_control.map('{:.2f}'.format)
@@ -121,7 +121,7 @@ mse_3=pd.Series(mse_3).map('{:.3f}'.format)
 
 ## Set the row and column names
 rownames = pd.concat([pd.Series(['=1 if retrofit','Square feet of home','Outdoor average temperature','Constant','MSE']),
-                      pd.Series([' ',' ',' ',' '])],axis = 1).stack() # Note this stacks an empty list to make room for stdevs
+                    pd.Series([' ',' ',' ',' '])],axis = 1).stack() # Note this stacks an empty list to make room for stdevs
 
 ## Align std deviations under means and add observations
 col1 = pd.concat([b_1,se_1,mse_1],axis = 1).stack()
@@ -169,7 +169,7 @@ mse_3=pd.Series(mse_3).map('{:.3f}'.format)
 
 ## Set the row and column names
 rownames = pd.concat([pd.Series(['=1 if retrofit','Square feet of home','Outdoor average temperature','Constant','MSE']),
-                      pd.Series([' ',' ',' ',' '])],axis = 1).stack() # Note this stacks an empty list to make room for stdevs
+                    pd.Series([' ',' ',' ',' '])],axis = 1).stack() # Note this stacks an empty list to make room for stdevs
 
 ## Align std deviations under means and add observations
 col1 = pd.concat([b_1,se_1,mse_1],axis = 1).stack()

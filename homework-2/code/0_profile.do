@@ -52,12 +52,6 @@
 	set scheme plotplainblind, permanently
 
 *********************************************************************************
-* Setting the location of R and python executable
-
-	python set exec "$py_path", permanently
-	python set userpath "$py_user_path", permanently
-
-*********************************************************************************
 * Create log file
 	
 	if $export_log == 1{

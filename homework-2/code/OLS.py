@@ -8,7 +8,7 @@ class manualOLS:
         This class implements the OLS estimator using different methods: 'byhand', 'leastsquares', and 'statsmodels'
         '''
         self.X = X
-        self.y = y
+        self.y = y.to_numpy()
         self.method = method
         self.addIntercept = addIntercept
         self.useRobust = useRobust
@@ -30,7 +30,7 @@ class manualOLS:
         elif self.method=='leastsquares':
             def ssr(b, X, y):
                 return np.sum(np.square(y-X@b[:,np.newaxis]))
-            beta=minimize(ssr, x0=np.zeros((self.X.shape[1],1)), args=(self.X, self.y)).x[:,np.newaxis]
+            beta=minimize(ssr, x0=np.zeros(self.X.shape[1]), args=(self.X, self.y)).x[:,np.newaxis]
                 
         elif self.method=='statsmodels':
             import statsmodels.api as sm
@@ -76,18 +76,12 @@ class manualOLS:
     def report(self):
         print('Regression using {:s} method'.format(self.method))
         print('Number of observations: {:d}\nNumber of parameters: {:d}'.format(self.n,self.k))
-        print('OLS estimates (standard errors in parentheses):')
-        
-        if type(self.X)==pd.core.frame.DataFrame:
-            colnames=np.concatenate(pd.Series(self.X.columns.tolist()),pd.Series(['cons']))[:,np.newaxis]
-            for col,b,std in zip(colnames,self.beta(),self.beta_std()):
-                b=b[0]
-                std=std[0]
-                print('{:s} {:1.5f} ({:1.5f})'.format(col,b,std))
+        if self.useRobust:
+            hetero=('heteroskedasticity-robust')
         else:
-            #colnames=self.X.columns.tolist()
-            #colnames=colnames+['cons']
-            for b,std in zip(self.beta(),self.beta_std()):
+            hetero=('')
+        print('OLS estimates ({:s} standard errors in parentheses):'.format(hetero))
+        for b,std in zip(self.beta(),self.beta_std()):
                 b=b[0]
                 std=std[0]
                 print('{:1.5f} ({:1.5f})'.format(b,std))
