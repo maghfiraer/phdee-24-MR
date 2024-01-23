@@ -1,6 +1,6 @@
 *********************************************************************************
 * AUTHOR		: MAGHFIRA RAMADHANI											*
-* PROJECT		: HOMEWORK 1													*
+* PROJECT		: HOMEWORK 2													*
 * COURSE		: ECON7103 Environmental Economics II							*
 * DESCRIPTION	: Main Code														*
 * INPUT			: NA	    													*
@@ -29,9 +29,9 @@ matrix drop _all
 
 	* Set the location of project directory location
 	
-	global path "C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-1"
-	*global data_path "$path\data"
-	*global temp_path "$path\temp"
+	global path "C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-2"
+	global data_path "$path\data"
+	global temp_path "$path\temp"
 	global code_path "$path\code" 
 	global table_path "$path\output\table" 
 	global figure_path "$path\output\figure"
@@ -50,19 +50,14 @@ matrix drop _all
 	do "$code_path\0_profile.do"
 
 *********************************************************************************
-* Run the given Stata code
-
-	do "$code_path\1_sample_stata_code.do"
+* Q1 Run the given Python code
+	
+	*python script "$code_path\1_python_OLS.py"
 
 *********************************************************************************
-* Run the given Python code
-	
-	* You can run the python code externally or directly from inside this do file
-	* If you want to run the python from Stata directly, you will need to:
-	* 1. Comment some lines in .py (line 6,7,74, and 139), otherwise uncomment
-	* 2. Uncomment line 64 below, otherwise comment
-	
-	*python script "$code_path\2_sample_python_script.py"
+* Q2 Run the given Stata code
+
+	do "$code_path\2_stata_code.do"
 
 *********************************************************************************
 * End of code

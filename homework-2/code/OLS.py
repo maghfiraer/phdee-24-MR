@@ -18,7 +18,7 @@ class manualOLS:
         if self.y.ndim==1:
             self.y = self.y[:,np.newaxis]
         if self.addIntercept:
-            self.X = np.concatenate((np.ones((self.X.shape[0],1)), self.X), axis=1)
+            self.X = np.concatenate((self.X, np.ones((self.X.shape[0],1))), axis=1)
         
         self.xxinv= np.linalg.inv(self.X.T @ self.X)
         self.n,self.k=self.X.shape
@@ -27,12 +27,11 @@ class manualOLS:
         if self.method=='byhand':
             beta = self.xxinv @ self.X.T @ self.y
             
-        #elif self.method=='leastsquares':
-            #def ssr(b, X, y):
-            #    return ((y-X@b).T@(y-X@b))[0,0]
-            #self.beta=minimize(ssr, x0=np.zeros((self.X.shape[1],1)), args=(self.X, self.y)).x
-            #[:,np.newaxis]
-            
+        elif self.method=='leastsquares':
+            def ssr(b, X, y):
+                return np.sum(np.square(y-X@b[:,np.newaxis]))
+            beta=minimize(ssr, x0=np.zeros((self.X.shape[1],1)), args=(self.X, self.y)).x[:,np.newaxis]
+                
         elif self.method=='statsmodels':
             import statsmodels.api as sm
             beta = sm.OLS(self.y, self.X).fit().params[:,np.newaxis]
@@ -53,7 +52,7 @@ class manualOLS:
         s2=e.T@e/(self.n-self.k)
         
         if self.useRobust:
-            cov=self.xxinv @ (self.X.T @ e @ e.T @self.X) @self.xxinv
+            cov=(self.n/(self.n-self.k))*self.xxinv @ (self.X.T @ np.diag(np.diag(e @ e.T)) @self.X) @self.xxinv
         else:
             cov=s2*self.xxinv
         return cov

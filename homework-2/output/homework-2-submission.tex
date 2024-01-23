@@ -8,6 +8,7 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{hyperref}
+\usepackage[flushleft]{threeparttable}
 \hypersetup{
 colorlinks=true,
     linkcolor=black,
@@ -48,31 +49,86 @@ Maghfira Ramadhani}
 \section{Python part}
 \subsection{Balance table}
 
-\begin{table}[H]
-    \centering
-    \input{./table/table1.tex}
-    \caption{Balance table. Abc}
+\begin{table}[H]\centering
+\begin{threeparttable}
+    \caption{Balance table from Python}
     \label{t1:balance}
+    \input{./table/table1.tex}
+    \begin{tablenotes}
+    \small \item abcd
+    \end{tablenotes}
+\end{threeparttable}
 \end{table}
 
 \subsection{Graphical evidence}
 
 \begin{figure}[H]
     \centering
+    \includegraphics[scale = 0.6]{./figure/2_hist.pdf}
     \caption{Density plot of electricity consumption}
     \label{f1:hist}
-    \includegraphics[scale = 0.6]{./figure/2_hist.pdf}
 \end{figure}
 
 \subsection{OLS regression}
 
-\begin{table}[H]
-    \centering
+\begin{table}[H]\centering
+\begin{threeparttable}
     \caption{OLS estimates for different computation methods}
     \label{t3:ols}
     \input{./table/ols.tex}
+    \begin{tablenotes}
+    \small \item abcd
+    \end{tablenotes}
+\end{threeparttable}
 \end{table}
 
+\begin{table}[H]\centering
+    \begin{threeparttable}
+        \caption{OLS estimates with robust S.E. for different computation methods}
+        \label{t4:ols_robust}
+        \input{./table/ols_robust.tex}
+        \begin{tablenotes}
+        \small \item abcd
+        \end{tablenotes}
+    \end{threeparttable}
+    \end{table}
+
+\section{Stata}
+
+\subsection{Balance table}
+
+\begin{table}[H]\centering
+\begin{threeparttable}
+    \caption{Balance table from Stata}
+    \label{t4:balance}
+    \input{./table/balance.tex}
+    \begin{tablenotes}
+    \small \item abcd
+    \end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Scatterplot}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 1]{./figure/twoway.pdf}
+    \caption{Scatterplot of electricity consumption and square feet of home}
+    \label{f2:twoway}
+\end{figure}
+
+\subsection{OLS regression}
+
+\begin{table}[H]\centering
+\begin{threeparttable}
+    \caption{Estimates from Stata}
+    \label{t5:ols_satat}
+    \input{./table/ols_stata.tex}
+    \begin{tablenotes}
+    \small \item abcd
+    \end{tablenotes}
+\end{threeparttable}
+\end{table}
 
 \cite{zm2009}
 

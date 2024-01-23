@@ -2,32 +2,14 @@
 * AUTHOR		: MAGHFIRA RAMADHANI											*
 * PROJECT		: HOMEWORK 1													*
 * COURSE		: ECON7103 Environmental Economics II							*
-* DESCRIPTION	: Modified stata code											*
+* DESCRIPTION	: Create balance table, twoway scatterplot, and regression		*
 * INPUT			: NA	    													*
 * OUTPUT		: .\output\table, .\output\figure								*
 * STATA VERSION	: Stata/MP 18.0													*
 *********************************************************************************
+* Load data
 
-* Sample Stata code -- initially by Dylan Brewer
-* Modified by Maghfira Ramadhani to match his workflow
-	
-* Generate some random data
-
-	set seed 3709
-
-	set obs 100 // 100 observations, so our random number generator stops at 100
-	
-	gen x1 = rnormal(10,10)
-	gen x2 = rnormal(20,15)
-	gen x3 = rnormal(15,15) // this variable we do not observe -- it is the error term
-	
-	la var x1 "Variable 1"
-	la var x2 "Variable 2"
-	la var x3 "Unobserved variable / error"
-	
-	gen yvar = x1*-3 + x2*11 + x3*1
-	
-	la var yvar "Outcome variable"
+	import delimited "$data_path\kwh.csv"
 
 ********************************************************************************
 * Create summary statistics table

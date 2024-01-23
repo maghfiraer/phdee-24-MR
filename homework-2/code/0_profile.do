@@ -1,6 +1,6 @@
 *********************************************************************************
 * AUTHOR		: MAGHFIRA RAMADHANI											*
-* PROJECT		: HOMEWORK 1													*
+* PROJECT		: HOMEWORK 2													*
 * COURSE		: ECON7103 Environmental Economics II				    		*
 * DESCRIPTION	: Setup the profile of the machine running  					*
 * INPUT			: NA	    													*

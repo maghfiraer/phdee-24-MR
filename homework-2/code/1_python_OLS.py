@@ -34,8 +34,8 @@ nobs_treatment = pd.Series(retro.count().min())
 p_vals = []
 t_stats = []    
 for col in retro.columns:
-    p_vals.append(stats.ttest_ind(retro[col],noretro[col])[1])
-    t_stats.append(stats.ttest_ind(retro[col],noretro[col])[0])
+    p_vals.append(stats.ttest_ind(noretro[col],retro[col],)[1])
+    t_stats.append(stats.ttest_ind(noretro[col],retro[col],)[0])
 p_vals = pd.Series(p_vals, index = retro.columns)
 t_stats = pd.Series(t_stats, index = retro.columns)
 
@@ -84,49 +84,43 @@ Q1.3: OLS by hand
 ------------------------------------------------------------------------------
 '''
 
-# test with one dimensional arrays
-X = np.array([1,2,3,4,5,6,7,8,9,10])
-y = np.array([9.4,8.1,7.7,6.3,5.7,4.4,3.0,2.1,1.1,0.8])
-
-manualOLS(X,y,method='statsmodels').report()
-
-# test with Dylan's data
-ols1=manualOLS(kwh[['sqft','retrofit','temp']],kwh['electricity'],method='byhand')
+# Run with Dylan's data for Non-robust standard errors
+ols1=manualOLS(kwh[['retrofit','sqft','temp']],kwh['electricity'],method='byhand')
 ols1.report()
 
-ols2=manualOLS(kwh[['sqft','retrofit','temp']],kwh['electricity'],method='statsmodels')
+ols2=manualOLS(kwh[['retrofit','sqft','temp']],kwh['electricity'],method='statsmodels')
 ols2.report()
 
-ols3=manualOLS(kwh[['sqft','retrofit','temp']],kwh['electricity'],method='statsmodels')
+ols3=manualOLS(kwh[['retrofit','sqft','temp']],kwh['electricity'],method='leastsquares')
 ols3.report()
 
 ## Compute estimates and standard errors by
 b_1 = ols1.beta().flatten()
 se_1 = ols1.beta_std().flatten()
 mse_1=ols1.MSE()
-b_1 = pd.Series(b_1, index = ['sqft','retrofit','temp','cons']).map('{:.3f}'.format)
-se_1 = pd.Series(se_1, index = ['sqft','retrofit','temp','cons']).map('({:.3f})'.format)
+b_1 = pd.Series(b_1, index = ['retrofit','sqft','temp','cons']).map('{:.3f}'.format)
+se_1 = pd.Series(se_1, index = ['retrofit','sqft','temp','cons']).map('({:.3f})'.format)
 mse_1=pd.Series(mse_1).map('{:.3f}'.format)
+
 
 ## Compute estimates and standard errors
 b_2 = ols2.beta().flatten()
 se_2 = ols2.beta_std().flatten()
 mse_2=ols2.MSE()
-b_2 = pd.Series(b_2, index = ['sqft','retrofit','temp','cons']).map('{:.3f}'.format)
-se_2 = pd.Series(se_2, index = ['sqft','retrofit','temp','cons']).map('({:.3f})'.format)
+b_2 = pd.Series(b_2, index = ['retrofit','sqft','temp','cons']).map('{:.3f}'.format)
+se_2 = pd.Series(se_2, index = ['retrofit','sqft','temp','cons']).map('({:.3f})'.format)
 mse_2=pd.Series(mse_2).map('{:.3f}'.format)
 
 ## Compute estimates and standard errors
 b_3 = ols3.beta().flatten()
 se_3 = ols3.beta_std().flatten()
 mse_3=ols3.MSE()
-b_3 = pd.Series(b_3, index = ['sqft','retrofit','temp','cons']).map('{:.3f}'.format)
-se_3 = pd.Series(se_3, index = ['sqft','retrofit','temp','cons']).map('({:.3f})'.format)
+b_3 = pd.Series(b_3, index = ['retrofit','sqft','temp','cons']).map('{:.3f}'.format)
+se_3 = pd.Series(se_3, index = ['retrofit','sqft','temp','cons']).map('({:.3f})'.format)
 mse_3=pd.Series(mse_3).map('{:.3f}'.format)
 
-
 ## Set the row and column names
-rownames = pd.concat([pd.Series(['Electricity','Square feet of home','Outdoor average temperature','Constant','MSE']),
+rownames = pd.concat([pd.Series(['=1 if retrofit','Square feet of home','Outdoor average temperature','Constant','MSE']),
                       pd.Series([' ',' ',' ',' '])],axis = 1).stack() # Note this stacks an empty list to make room for stdevs
 
 ## Align std deviations under means and add observations
@@ -138,3 +132,51 @@ col3 = pd.concat([b_3,se_3,mse_3],axis = 1).stack()
 col = pd.DataFrame({'By Hand': col1, 'Stats Model': col1, 'Least Squares': col3})
 col.index = rownames
 col.to_latex(outputpath + '/table/ols.tex',column_format='lccc',escape=False)
+
+# Run with Dylan's data for Heteroscedasticity robust standard errors
+ols1=manualOLS(kwh[['retrofit','sqft','temp']],kwh['electricity'],method='byhand',useRobust=True)
+ols1.report()
+
+ols2=manualOLS(kwh[['retrofit','sqft','temp']],kwh['electricity'],method='statsmodels',useRobust=True)  
+ols2.report()
+
+ols3=manualOLS(kwh[['retrofit','sqft','temp']],kwh['electricity'],method='leastsquares',useRobust=True)
+ols3.report()
+
+## Compute estimates and standard errors by
+b_1 = ols1.beta().flatten()
+se_1 = ols1.beta_std().flatten()
+mse_1=ols1.MSE()
+b_1 = pd.Series(b_1, index = ['retrofit','sqft','temp','cons']).map('{:.3f}'.format)
+se_1 = pd.Series(se_1, index = ['retrofit','sqft','temp','cons']).map('({:.3f})'.format)
+mse_1=pd.Series(mse_1).map('{:.3f}'.format)
+
+## Compute estimates and standard errors
+b_2 = ols2.beta().flatten()
+se_2 = ols2.beta_std().flatten()
+mse_2=ols2.MSE()
+b_2 = pd.Series(b_2, index = ['retrofit','sqft','temp','cons']).map('{:.3f}'.format)
+se_2 = pd.Series(se_2, index = ['retrofit','sqft','temp','cons']).map('({:.3f})'.format)
+mse_2=pd.Series(mse_2).map('{:.3f}'.format)
+
+## Compute estimates and standard errors
+b_3 = ols3.beta().flatten()
+se_3 = ols3.beta_std().flatten()
+mse_3=ols3.MSE()
+b_3 = pd.Series(b_3, index = ['retrofit','sqft','temp','cons']).map('{:.3f}'.format)
+se_3 = pd.Series(se_3, index = ['retrofit','sqft','temp','cons']).map('({:.3f})'.format)
+mse_3=pd.Series(mse_3).map('{:.3f}'.format)
+
+## Set the row and column names
+rownames = pd.concat([pd.Series(['=1 if retrofit','Square feet of home','Outdoor average temperature','Constant','MSE']),
+                      pd.Series([' ',' ',' ',' '])],axis = 1).stack() # Note this stacks an empty list to make room for stdevs
+
+## Align std deviations under means and add observations
+col1 = pd.concat([b_1,se_1,mse_1],axis = 1).stack()
+col2 = pd.concat([b_2,se_2,mse_2],axis = 1).stack()
+col3 = pd.concat([b_3,se_3,mse_3],axis = 1).stack()
+
+## Add column and row labels.  Convert to dataframe (helps when you export it)
+col = pd.DataFrame({'By Hand': col1, 'Stats Model': col1, 'Least Squares': col3})
+col.index = rownames
+col.to_latex(outputpath + '/table/ols_robust.tex',column_format='lccc',escape=False)
