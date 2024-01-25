@@ -1,0 +1,167 @@
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-2\output\log\homework_1_25_Jan_2024_11_56_39.log
+  log type:  text
+ opened on:  25 Jan 2024, 11:56:39
+.                 }
+
+. 
+. *********************************************************************************
+. 
+end of do-file
+
+. 
+. *********************************************************************************
+. * Q1 Run the given Python code from Shell (make sure dependency are all installed)
+.         
+.         !python 1_python_OLS.py
+  File "C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-2\code\1_python_OLS.py", line 171
+    rownames = pd.concat([pd.Series(['=1 if house received retrofit,'Square feet of home','Outdoor average temperature (\textdegree F)','Constant','MSE']),
+                                                                     ^
+SyntaxError: invalid syntax
+
+. 
+. *********************************************************************************
+. * Q2 Run the given Stata code
+. 
+.         do "$code_path\2_stata_code.do"
+
+. *********************************************************************************
+. * AUTHOR                : MAGHFIRA RAMADHANI                                                                                    *
+. * PROJECT               : HOMEWORK 2                                                                                                    *
+. * COURSE                : ECON7103 Environmental Economics II                                                   *
+. * DESCRIPTION   : Produce balance table, scatterplot, and regression                    *
+. * INPUT                 : NA                                                                                                            *
+. * OUTPUT                : .\output\table, .\output\figure                                                               *
+. * STATA VERSION : Stata/MP 18.0                                                                                                 *
+. *********************************************************************************
+. * Q2.0 Load data
+. 
+.         import delimited "$data_path\kwh.csv"
+(encoding automatically selected: ISO-8859-2)
+(4 vars, 1,000 obs)
+
+.         label variable electricity "Monthly electricity consumption (kWh)" 
+
+.         label variable sqft "Square feet of home" 
+
+.         label variable retrofit "=1 if house received retrofit"
+
+.         label variable temp "Outdoor average temperature (\textdegree F)"
+
+. 
+. ********************************************************************************
+. * Q2.1 Create a balance table
+. 
+.         * Generate estimates of mean and std dev, and p-value and t-stat for difference in mean
+.         eststo control: estpost summarize electricity sqft temp if retrofit == 0
+
+             |  e(count)   e(sum_w)    e(mean)     e(Var)      e(sd)     e(min)     e(max)     e(sum) 
+-------------+----------------------------------------------------------------------------------------
+ electricity |       501        501   1181.329   206395.8    454.308   518.1853   2383.417   591846.1 
+        sqft |       501        501   1633.052   466357.3   682.9035        732       3078     818159 
+        temp |       501        501   79.89138   4.680573   2.163463      73.88      86.14   40025.58 
+
+.         eststo treatment: estpost summarize electricity sqft temp if retrofit == 1
+
+             |  e(count)   e(sum_w)    e(mean)     e(Var)      e(sd)     e(min)     e(max)     e(sum) 
+-------------+----------------------------------------------------------------------------------------
+ electricity |       499        499   1086.745   179741.8   423.9597   466.8233   2101.899     542286 
+        sqft |       499        499   1657.551   470967.6   686.2708        730       3168     827118 
+        temp |       499        499   79.89349   3.873386   1.968092      74.49       85.1   39866.85 
+
+.         eststo differences:  estpost ttest electricity sqft temp, by(retrofit) unequal
+
+             |      e(b)   e(count)      e(se)       e(t)    e(df_t)     e(p_l)       e(p)     e(p_u)     e(N_1)    e(mu_1)     e(N_2)    e(mu_2) 
+-------------+------------------------------------------------------------------------------------------------------------------------------------
+ electricity |  94.58401       1000   27.78798   3.403775    993.797   .9996544   .0006912   .0003456        501   1181.329        499   1086.745 
+        sqft | -24.49921       1000   43.29753  -.5658339   997.9206    .285817   .5716339    .714183        501   1633.052        499   1657.551 
+        temp |   -.00211       1000   .1307852  -.0161333   989.9143   .4935656   .9871313   .5064344        501   79.89138        499   79.89349 
+
+. 
+.         *** Using .tex
+.         esttab control treatment differences using "$table_path\balance.tex", replace label ///
+>                 cell( mean(pattern(1 1 0) fmt(2))     &  p(pattern(0 0 1) fmt(3)) ///
+>                                 sd(pattern(1 1 0) fmt(2) par) & t(pattern(0 0 1) fmt(3) par([ ]) ) ) ///
+>                 mtitle("Control" "Treatment" "P-value")  collabels(none) nonum ///
+>         stats(N, fmt(%15.0fc) label("Observations"))
+(output written to C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-2\output\table\balance.tex)
+
+.         
+. ********************************************************************************
+. * Q2.2 Create a scatterlplot
+. 
+.         * Generate estimates of mean and std dev
+.         twoway  (scatter electricity sqft, mcolor(%60)), ///
+>                 legend(off)
+
+.                 //title("{bf}Scatterplot", pos(11) size(2.75)) ///
+.                 //subtitle("Electricity consumption vs. Square feet of home", pos(11) size(2.5)) ///
+.                 
+.         graph export "$figure_path\twoway.pdf", replace
+file C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-2\output\figure\twoway.pdf saved as PDF format
+
+.         
+. ********************************************************************************
+. * Q2.2 Run OLS regression
+. 
+.         * Generate OLS estimates
+.         eststo nonrobust: reg electricity retrofit sqft temp
+
+      Source |       SS           df       MS      Number of obs   =     1,000
+-------------+----------------------------------   F(3, 996)       =   3783.79
+       Model |   179220536         3  59740178.7   Prob > F        =    0.0000
+    Residual |  15725293.4       996  15788.4472   R-squared       =    0.9193
+-------------+----------------------------------   Adj R-squared   =    0.9191
+       Total |   194945830       999  195140.971   Root MSE        =    125.65
+
+------------------------------------------------------------------------------
+ electricity | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+    retrofit |  -109.6662    7.94823   -13.80   0.000    -125.2634   -94.06898
+        sqft |   .6153385   .0058123   105.87   0.000     .6039327    .6267443
+        temp |   3.255077   1.923834     1.69   0.091     -.520155     7.03031
+       _cons |  -83.60292   154.3596    -0.54   0.588    -386.5102    219.3044
+------------------------------------------------------------------------------
+
+.         eststo robust: reg electricity retrofit sqft temp, robust
+
+Linear regression                               Number of obs     =      1,000
+                                                F(3, 996)         =    2818.75
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.9193
+                                                Root MSE          =     125.65
+
+------------------------------------------------------------------------------
+             |               Robust
+ electricity | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+    retrofit |  -109.6662   7.942937   -13.81   0.000     -125.253   -94.07937
+        sqft |   .6153385   .0067793    90.77   0.000     .6020351    .6286419
+        temp |   3.255077   1.931696     1.69   0.092    -.5355833    7.045738
+       _cons |  -83.60292    154.695    -0.54   0.589    -387.1684    219.9625
+------------------------------------------------------------------------------
+
+.         
+.         *** Using .tex
+.         esttab nonrobust robust using "$table_path\ols_stata.tex", label replace ///
+>                 cell(   b(pattern(1 1) fmt(3))      ///
+>                                 se(pattern(1 1) fmt(3) par) ) ///
+>                 mtitle("OLS" "OLS with robust s.e.") collabels(none) nostar nonum ///
+>         stats(N, fmt(%15.0fc) label("Observations"))
+(output written to C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-2\output\table\ols_stata.tex)
+
+.         
+. 
+end of do-file
+
+. 
+. *********************************************************************************
+. * End of code
+. if $export_log == 1{
+.         log close
+      name:  <unnamed>
+       log:  C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-2\output\log\homework_1_25_Jan_2024_11_56_39.log
+  log type:  text
+ closed on:  25 Jan 2024, 11:56:39
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

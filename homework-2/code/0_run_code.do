@@ -26,7 +26,7 @@ matrix drop _all
 	
 	* Select option to export log
 	
-	global export_log 0 // Set to 1 if you want to export log, 0 o/w
+	global export_log 1 // Set to 1 if you want to export log, 0 o/w
 
 	* Set the location of project directory location
 	

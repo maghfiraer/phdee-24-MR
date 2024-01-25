@@ -9,6 +9,7 @@
 \usepackage{float}
 \usepackage{hyperref}
 \usepackage[flushleft]{threeparttable}
+\usepackage{textcomp}
 \hypersetup{
 colorlinks=true,
     linkcolor=black,
@@ -53,7 +54,7 @@ In this assignment, we are given imaginary data on an energy-efficiency retrofit
 
 To support the argument that the randomization worked, we can do a simple difference-in-means test between the control and treatment group. The word `worked' means twofolds here. If the household characteristics in the control and treatment group looks similar, we may say that the treatment is independent conditional on the covariates of household characteristics, i.e. square feet of home and outdoor average temperature. And consequently, since the conditional independence assumption is justified, we can compare the difference in means of monthly electricity consumption between the treatment and control group and say something about the impact of the retrofit program. 
 
-Comparing the difference-in-means of the covariates in Table \ref{t1:balance}, there is no evidence of selection in the assignment. In arguing whether the program really affect household electricity consumption, there is strong evidence that it successfully reduces monthly consumption. Can I say that by satisfying the independence assumption then the difference-in-means estimates the average treatment effect? In this  probably not, because square feet of home might and outdoor average temperature are likely to be correlated with electricity consumption which result in biased estimates if it is not included as control.
+Comparing the difference-in-means of the covariates in Table \ref{t1:balance}, there is no evidence of selection in the assignment. In arguing whether the program really affect household electricity consumption, there is strong evidence that it successfully reduces monthly consumption. Can we say that by satisfying the independence assumption then the difference-in-means estimates the average treatment effect? In this case, probably not, because square feet of home might and outdoor average temperature are likely to be correlated with electricity consumption which result in biased estimates if it is not included as control.
 
 \begin{table}[H]\centering
 \begin{threeparttable}
@@ -98,7 +99,7 @@ Table \ref{t2:ols} and \ref{t3:ols_robust} shows the estimates from using differ
 
 \begin{table}[H]\centering
     \begin{threeparttable}
-        \caption{OLS estimates with robust S.E. for different computation methods}
+        \caption{OLS estimates with robust s.e. for different computation methods}
         \label{t3:ols_robust}
         \input{./table/ols_robust.tex}
         \begin{tablenotes}

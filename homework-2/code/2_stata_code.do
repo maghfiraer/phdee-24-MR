@@ -10,10 +10,10 @@
 * Q2.0 Load data
 
 	import delimited "$data_path\kwh.csv"
-	label variable electricity "Electricity" 
+	label variable electricity "Monthly electricity consumption (kWh)" 
 	label variable sqft "Square feet of home" 
-	label variable retrofit "=1 if retrofit"
-	label variable temp "Outdoor average temperature"
+	label variable retrofit "=1 if house received retrofit"
+	label variable temp "Outdoor average temperature (\textdegree F)"
 
 ********************************************************************************
 * Q2.1 Create a balance table
@@ -52,6 +52,6 @@
 	esttab nonrobust robust using "$table_path\ols_stata.tex", label replace ///
 		cell( 	b(pattern(1 1) fmt(3))      ///
 				se(pattern(1 1) fmt(3) par) ) ///
-		mtitle("Non-robust S.E." "Robust S.E.") collabels(none) nostar nonum ///
-	stats(N, fmt(%15.0fc) label("Observations"))
+		mtitle("OLS" "OLS with robust s.e.") collabels(none) nostar nonum ///
+	stats(rmse, fmt(%15.3fc) label("MSE"))
 	

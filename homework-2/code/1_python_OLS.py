@@ -40,7 +40,7 @@ p_vals = pd.Series(p_vals, index = retro.columns)
 t_stats = pd.Series(t_stats, index = retro.columns)
 
 ## Set the row and column names
-rownames = pd.concat([pd.Series(['Electricity','Square feet of home','Outdoor average temperature', 'Observations']),
+rownames = pd.concat([pd.Series(['Monthly electricity consumption (kWh)','Square feet of home','Outdoor average temperature (\\textdegree F)', 'Observations']),
                     pd.Series([' ',' ',' '])],axis = 1).stack() # Note this stacks an empty list to make room for stdevs
 
 ## Format means and std devs to display to two decimal places
@@ -120,7 +120,7 @@ se_3 = pd.Series(se_3, index = ['retrofit','sqft','temp','cons']).map('({:.3f})'
 mse_3=pd.Series(mse_3).map('{:.3f}'.format)
 
 ## Set the row and column names
-rownames = pd.concat([pd.Series(['=1 if retrofit','Square feet of home','Outdoor average temperature','Constant','MSE']),
+rownames = pd.concat([pd.Series(['=1 if house received retrofit','Square feet of home','Outdoor average temperature (\\textdegree F)','Constant','M.S.E.']),
                     pd.Series([' ',' ',' ',' '])],axis = 1).stack() # Note this stacks an empty list to make room for stdevs
 
 ## Align std deviations under means and add observations
@@ -168,7 +168,7 @@ se_3 = pd.Series(se_3, index = ['retrofit','sqft','temp','cons']).map('({:.3f})'
 mse_3=pd.Series(mse_3).map('{:.3f}'.format)
 
 ## Set the row and column names
-rownames = pd.concat([pd.Series(['=1 if retrofit','Square feet of home','Outdoor average temperature','Constant','MSE']),
+rownames = pd.concat([pd.Series(['=1 if house received retrofit','Square feet of home','Outdoor average temperature (\\textdegree F)','Constant','MSE']),
                     pd.Series([' ',' ',' ',' '])],axis = 1).stack() # Note this stacks an empty list to make room for stdevs
 
 ## Align std deviations under means and add observations
