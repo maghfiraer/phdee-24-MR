@@ -46,8 +46,14 @@ Maghfira Ramadhani}
 \date{\today}
 \maketitle
 
+In this assignment, we are given imaginary data on an energy-efficiency retrofit program in Atlanta. The research hypothesis is whether the program reduced energy use. The experiment done in such way that after recruiting the households for the program, we assigned them to treatment and control groups. Treatment homes received the retrofits on the first of the month and control homes did not have any work done.
+
 \section{Python part}
 \subsection{Balance table}
+
+To support the argument that the randomization worked, we can do a simple difference-in-means test between the control and treatment group. The word `worked' means twofolds here. If the household characteristics in the control and treatment group looks similar, we may say that the treatment is independent conditional on the covariates of household characteristics, i.e. square feet of home and outdoor average temperature. And consequently, since the conditional independence assumption is justified, we can compare the difference in means of monthly electricity consumption between the treatment and control group and say something about the impact of the retrofit program. 
+
+Comparing the difference-in-means of the covariates in Table \ref{t1:balance}, there is no evidence of selection in the assignment. In arguing whether the program really affect household electricity consumption, there is strong evidence that it successfully reduces monthly consumption. Can I say that by satisfying the independence assumption then the difference-in-means estimates the average treatment effect? In this  probably not, because square feet of home might and outdoor average temperature are likely to be correlated with electricity consumption which result in biased estimates if it is not included as control.
 
 \begin{table}[H]\centering
 \begin{threeparttable}
@@ -55,12 +61,13 @@ Maghfira Ramadhani}
     \label{t1:balance}
     \input{./table/table1.tex}
     \begin{tablenotes}
-    \small \item abcd
+    \small \item \textit{Notes} Columns 1 and 2 report the mean and standard deviation in parentheses of the variables for the control group and treatment group consecutively. The third column show the p values for difference-in-means test and its corresponding t-statistics in square bracket.
     \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
 \subsection{Graphical evidence}
+Figure \ref{f1:hist} shows the density plot for the control and treatment groups. The distribution of electricity consumption for home with retrofit is first order stochastically dominated, or in other words across the support on average the average consumption for home with retrofit is less than those without.
 
 \begin{figure}[H]
     \centering
@@ -70,14 +77,21 @@ Maghfira Ramadhani}
 \end{figure}
 
 \subsection{OLS regression}
+There are different computation methods to obtain the OLS estimates. I describe the method used to compute the OLS estimates inside the \verb!OLS.py! file within the \verb!manualOLS! class. The class takes three argument \verb!useRobust, addIntercept,! and \verb!method!. Options of \verb!method! to use are \verb|'byhand'| to use matrix inversion, \verb|'stasmodels'| to used the python canned routing, and \verb|'leastsquares'| to use the least square minimizer. The argument \verb!useRobust! is by default set to \verb!False! while \verb!addIntercept! is by default set to \verb!True!. User can use \verb!useRobust=True! to get the heteroscedasticity robust OLS standard error estimator. The class return the coefficient estimates under the properties \verb!.beta()!. The standard error of estimates can be obtained from the properties \verb!.beta_std()!. 
+
+Table \ref{t2:ols} and \ref{t3:ols_robust} shows the estimates from using different computation method which gives identical coefficient estimates.
 
 \begin{table}[H]\centering
 \begin{threeparttable}
     \caption{OLS estimates for different computation methods}
-    \label{t3:ols}
+    \label{t2:ols}
     \input{./table/ols.tex}
     \begin{tablenotes}
-    \small \item abcd
+    \small \item The s.e. estimates is obtained using the square-root of the diagonal element of the following covariance matrix:
+    \begin{align*}
+        \hat{V}(\hat{\beta})=\frac{1}{n-k}\sum_{j=1}^k \underbrace{\hat{e}_j^2}_{y_i-\textbf{x}_i\hat{\beta}}\left(\textbf{X'}\textbf{X}\right)^{-1}
+    \end{align*}
+    
     \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -85,10 +99,13 @@ Maghfira Ramadhani}
 \begin{table}[H]\centering
     \begin{threeparttable}
         \caption{OLS estimates with robust S.E. for different computation methods}
-        \label{t4:ols_robust}
+        \label{t3:ols_robust}
         \input{./table/ols_robust.tex}
         \begin{tablenotes}
-        \small \item abcd
+        \small \item The s.e. estimates is obtained using the square-root of the diagonal element of the following covariance matrix:
+    \begin{align*}
+        \hat{V}(\hat{\beta})=\left(\textbf{X'}\textbf{X}\right)^{-1}\left(\frac{n}{n-k}\sum_{j=1}^k \hat{e}_j^2\textbf{x}_j\textbf{x}_j\right)\left(\textbf{X'}\textbf{X}\right)^{-1}    
+        \end{align*}
         \end{tablenotes}
     \end{threeparttable}
     \end{table}
@@ -98,12 +115,14 @@ Maghfira Ramadhani}
 \subsection{Balance table}
 
 \begin{table}[H]\centering
+Table \ref{t4:balance} is produced from Stata and show exactly the same result as in Table \ref{t1:balance}.
+
 \begin{threeparttable}
     \caption{Balance table from Stata}
     \label{t4:balance}
     \input{./table/balance.tex}
     \begin{tablenotes}
-    \small \item abcd
+    \small \item \textit{Notes} Columns 1 and 2 report the mean and standard deviation in parentheses of the variables for the control group and treatment group consecutively. The third column show the p values for difference-in-means test and its corresponding t-statistics in square bracket.
     \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -118,20 +137,17 @@ Maghfira Ramadhani}
 \end{figure}
 
 \subsection{OLS regression}
+Table \ref{t5:ols_stata} is produced from Stata and shows the same result with the Python version.
 
 \begin{table}[H]\centering
 \begin{threeparttable}
     \caption{Estimates from Stata}
-    \label{t5:ols_satat}
+    \label{t5:ols_stata}
     \input{./table/ols_stata.tex}
     \begin{tablenotes}
-    \small \item abcd
+    \small \item The non-robust and robust standard error estimates is exactly the same as in Table \ref{t2:ols} and \ref{t3:ols_robust}.
     \end{tablenotes}
 \end{threeparttable}
 \end{table}
-
-\cite{zm2009}
-
-\bibliography{\bib}
 
 \end{document}
