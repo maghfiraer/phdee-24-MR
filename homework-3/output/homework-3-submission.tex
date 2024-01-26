@@ -4,6 +4,7 @@
 \usepackage[letterpaper, portrait, margin=1in]{geometry}
 \usepackage{enumitem}
 \usepackage{amsmath}
+\usepackage{amsthm}
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{float}
@@ -52,14 +53,40 @@ In this assignment, we are given imaginary data on an energy-efficiency retrofit
 \begin{enumerate}
 \item Suppose that for for a home $i$, the underlying relationship between electricity use and predictor variable is given by 
 
-\begin{align*}
-    y_i=e^\alpha\delta^{d_i}z_i^{\gamma}e^{\eta_i}
-\end{align*}
+\begin{align}
+    y_i=e^\alpha\delta^{d_i}z_i^{\gamma}e^{\eta_i} \label{h3e1}
+\end{align}
 
 where $y_i$ is the electricity use, $e$ is Euler's number or the base of the natural logarithm, $d_i$ is a binary variable equal to one if home $i$ received the retrofit program, $z_i$ is a vector of the other control variables, and $\eta_i$ is unobserved error, and $\{\alpha,\delta,\gamma\}$ are the parameter to estimates.
 
 \begin{enumerate}
-    \item 
+    \item Show that $\ln(y_i)=\alpha+\ln(\delta)d_i+\gamma\ln(z_i)+\eta_i$
+    \\\textbf{Answer}\\
+    Rewrite Equation \eqref{h3e1} by taking natural log on both sides and distribute the natural log on the right hand side of the equation, we have
+    \begin{align}
+         \ln(y_i)&=\ln\left(e^\alpha\delta^{d_i}z_i^{\gamma}e^{\eta_i}\right) \notag\\
+        \ln(y_i)&=\ln(e^\alpha)+\ln(\delta^{d_i})+\ln(z_i^{\gamma})+\ln(e^{\eta_i}) \notag\\
+        \ln(y_i)&=\alpha+\ln(\delta^{d_i})+\gamma\ln(z_i)+\eta_i \notag\\
+        \ln(y_i)&=\alpha+\ln(\delta)d_i+\gamma\ln(z_i)+\eta_i\notag.
+    \end{align}\qed
+    \item What is the intuitive interpretation of $\delta$?
+    \\\textbf{Answer}\\
+    Let's take the expectation of Equation \eqref{h3e1} conditional on $d_i$, we have
+    \begin{align}
+        \E[y_i|d_i=1]&=e^\alpha\delta z_i^{\gamma}e^{\eta_i}\\
+        \E[y_i|d_i=0]&=e^\alpha z_i^{\gamma}e^{\eta_i}
+    \end{align}
+    Dividing the first equation by the second equation, we have
+    \begin{align}
+        \delta=\frac{\E[y_i|d_i=1]}{\E[y_i|d_i=0]}  
+    \end{align}
+    which means $\delta$ translates to the ratio of the expected electricity use of the treatment group to the expected electricity use of the control group.
+    \item Show that $\frac{\Delta y_i}{\Delta d_i}=\frac{\delta-1}{\delta^{d_i}}y_i$. What is the intuitive interpretation of $\frac{\Delta y_i}{\Delta d_i}$?
+    \\\textbf{Answer}\\
+    Taking the e
+    \item Show that $\frac{\delta y_i}{\delta z_i}=\gamma\frac{y_i}{z_i}$. What is the intuitive interpretation of $\frac{\delta y_i}{\delta z_i}$ when $z_i$ is the size of the home in square feet?
+    \item Estimate the log-transformed equation via OLS on the transformed parameters. Save the coefficient estimates and the average marginal effects estimates of $z_i$ and $d_i$ $\left(\frac{\delta y_i}{\delta z_i}\text{ and }\frac{\Delta y_i}{\Delta d_i}\right)$. Bootstrap the 95\% confidence intervals of the coefficient estimates and the marginal effects estimates using 1000 sampling replications. Display the results in a table with three columns (one for the variable name, one for the coefficient estimates, and once for the marginal effect estimate). Show the 95\% confidence intervals for each estimate under each number.
+    \item Graph the \textbf{average marginal effects} of outdoor temperature and square feet of home with bands for their bootstrapped confidence intervals so that they are easy to interpret and compare.
 \end{enumerate}
 
 
