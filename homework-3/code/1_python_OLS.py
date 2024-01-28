@@ -11,7 +11,7 @@ outputpath = r'C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\D
 
 '''
 ------------------------------------------------------------------------------
-Q1.1: Difference in means
+Q1.(e): Estimate log-transformed model
 ------------------------------------------------------------------------------
 '''
 
@@ -177,6 +177,6 @@ col2 = pd.concat([b_2,se_2,mse_2],axis = 1).stack()
 col3 = pd.concat([b_3,se_3,mse_3],axis = 1).stack()
 
 ## Add column and row labels.  Convert to dataframe (helps when you export it)
-col = pd.DataFrame({'By Hand': col1, 'Stats Model': col1, 'Least Squares': col3})
+col = pd.DataFrame({'By Hand': col1, 'Stats Model': col2, 'Least Squares': col3})
 col.index = rownames
 col.to_latex(outputpath + '/table/ols_robust.tex',column_format='lccc',escape=False)

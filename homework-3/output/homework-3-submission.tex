@@ -52,7 +52,6 @@ In this assignment, we are given imaginary data on an energy-efficiency retrofit
 
 \begin{enumerate}
 \item Suppose that for for a home $i$, the underlying relationship between electricity use and predictor variable is given by 
-
 \begin{align}
     y_i=e^\alpha\delta^{d_i}z_i^{\gamma}e^{\eta_i} \label{h3e1}
 \end{align}
@@ -87,12 +86,11 @@ where $y_i$ is the electricity use, $e$ is Euler's number or the base of the nat
     \[\frac{\Delta y_i}{\Delta d_i}=\E[y_i|d_i=1]-\E[y_i|d_i=0].\]
     By using previous result in equation \eqref{h3e5}, we have 
     \begin{align}
-        \E[y_i|d_i=1]-\E[y_i|d_i=0]&=\delta\E[y_i|d_i=0]-\E[y_i|d_i=0]\notag\\
-        &=(\delta-1)\E[y_i|d_i=0] \label{h3e6}
+        \E[y_i|d_i=1]-\E[y_i|d_i=0]&=\delta\E[y_i|d_i=0]-\E[y_i|d_i=0]=(\delta-1)\E[y_i|d_i=0] \label{h3e6}
     \end{align}
     Since we only observed $y_i$ from the data we need to know what exactly is $\E[y_i|d_i=0]$. Since the relationship between $y_i$ and $d_i$ is non-linear, it might be useful to apply potential outcome framework with equation \eqref{h3e2}. Suppose $y_{0i}$ is the potential outcome of $y_i$ if $d_i=0$ and $y_{1i}$ is the potential outcome of $y_{1i}$ if $d_i=1$. From the underlying relationship, note that for every house $i$, we have $y_{1i}/y_{0i}=\delta$. Applying the potential outcome framework, we have
     \begin{align}
-        &\ln(y_i)=\ln(y_{0i})+[\ln(y_{1i})-\ln(y_{0i})]d_i \notag\\
+        \ln(y_i)=\ln(y_{0i})+[\ln(y_{1i})-\ln(y_{0i})]d_i
         \Leftrightarrow& \ln\left(\frac{y_i}{y_{0i}}\right)=d_i\ln\left(\frac{y_{1i}}{y_{0i}}\right)=d_i\ln(\delta) \notag\\
         \Leftrightarrow& \frac{y_i}{y_{0i}}=e^{d_i\ln(\delta)}=\delta^{d_i} \notag\\
         \Leftrightarrow& y_{0i}=\frac{1}{\delta^{d_i}}y_i \label{h3e7}
@@ -111,7 +109,26 @@ where $y_i$ is the electricity use, $e$ is Euler's number or the base of the nat
     If $z_i$ is the size of the home in square feet, then the intuitive interpretation of $\frac{\delta y_i}{\delta z_i}$ is the change in monthly electricity consumption in kWh if the size of the home in square feet increase by one square feet. We can expect the sign of $\gamma$ to be positive. The larger the size of the home, the more electricity it consumes.
 
     \item Estimate the log-transformed equation via OLS on the transformed parameters. Save the coefficient estimates and the average marginal effects estimates of $z_i$ and $d_i$ $\left(\frac{\delta y_i}{\delta z_i}\text{ and }\frac{\Delta y_i}{\Delta d_i}\right)$. Bootstrap the 95\% confidence intervals of the coefficient estimates and the marginal effects estimates using 1000 sampling replications. Display the results in a table with three columns (one for the variable name, one for the coefficient estimates, and once for the marginal effect estimate). Show the 95\% confidence intervals for each estimate under each number.
+    \\\textbf{Answer}\\
+    \begin{table}[H]\centering
+        \begin{threeparttable}
+            \caption{Parameter and average marginal effect estimates}
+            \label{t1:estimates}
+            \input{./table/h31e.tex}
+            \begin{tablenotes}
+            \small \item Column 1 shows the estimates of $\alpha,\delta,\gamma_{sqft}$, and $\gamma_T$ parameter and their 95\% confidence intervals. Column 2 shows the average marginal effect estimates of the retrofit ($\frac{\Delta y_i}{\Delta d_i}$), square feet of home ($\frac{\delta y_i}{\delta sqft_i}$), and outdoor temperature ($\frac{\delta y_i}{\delta T_i}$) and their 95\% confidence intervals.
+            \end{tablenotes}
+        \end{threeparttable}
+        \end{table}
     \item Graph the \textbf{average marginal effects} of outdoor temperature and square feet of home with bands for their bootstrapped confidence intervals so that they are easy to interpret and compare.
+    \\\textbf{Answer}\\
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale = 0.7]{./figure/ame.pdf}
+        \caption{Average marginal effect estimates of outdoor temperature and square feet of home}
+        \label{f1:ame}
+    \end{figure}
+    The interpretation of the estimates in Figure \ref{f1:ame} is as follows. The larger the house size, the more electricity it consumes with an average additional consumption of around 0.6 kWh per additional square feet. Similarly, the higher the outdoor temperature, the more electricity a house consumes with the increase ranges from 0.5 to 7.4 kWh per one \textdegree F of increase.
 \end{enumerate}
 
 
