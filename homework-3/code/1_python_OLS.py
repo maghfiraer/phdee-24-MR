@@ -3,11 +3,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import stats
-from OLS import manualOLS
+import statsmodels.api as sm
 
 
 datapath = r'C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-3\data'
 outputpath = r'C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-3\output'
+np.random.seed(1)
 
 '''
 ------------------------------------------------------------------------------
@@ -15,168 +16,106 @@ Q1.(e): Estimate log-transformed model
 ------------------------------------------------------------------------------
 '''
 
-kwh=pd.read_csv(datapath +'/kwh.csv')
+data=pd.read_csv(datapath +'/kwh.csv')
 
-retro=kwh.loc[kwh['retrofit']==1].drop('retrofit',axis=1)
-noretro=kwh.loc[kwh['retrofit']==0].drop('retrofit',axis=1)
+# Generate log-transformed data
+data['ln_electricity']=np.log(data['electricity'])
+data['ln_sqft']=np.log(data['sqft'])
+data['ln_temp']=np.log(data['temp'])
 
-# Generate a table of means and standard deviations for the observed variables (there are faster ways to do this that are less general)
-## Generate means and standard deviations
-means_control = noretro.mean()
-stdev_control = noretro.std()
-nobs_control = pd.Series(noretro.count().min())
+## Estimate parameter from the log-transformed model
+ols = sm.OLS(data['ln_electricity'],sm.add_constant(data[['retrofit','ln_sqft','ln_temp']])).fit()
+param_ols = ols.params.to_numpy() # save estimated parameters
+params, = np.shape(param_ols) # save number of estimated parameters
+nobs3 = int(ols.nobs)
+param_ols[1]=np.exp(param_ols[1]) # convert retrofit coefficient (ln delta) back to delta
 
-means_treatment_1 = retro.mean()
-stdev_treatment = retro.std()
-nobs_treatment = pd.Series(retro.count().min())
+## Calculate average marginal effects (AME)
+marg_1=data.apply(lambda x: (param_ols[1]-1)*x['electricity']/(param_ols[1]**x['retrofit']),axis=1) # calculate AME for di
+marg_2=data.apply(lambda x: param_ols[2]*x['electricity']/x['sqft'],axis=1) # calculate AME for sqft
+marg_3=data.apply(lambda x: param_ols[3]*x['electricity']/x['temp'],axis=1) # calculate AME for temp
+marg=[marg_1.mean(),marg_2.mean(),marg_3.mean()] #save estimated AME
 
-## Compute P-values and t-statistics
-p_vals = []
-t_stats = []    
-for col in retro.columns:
-    p_vals.append(stats.ttest_ind(noretro[col],retro[col],)[1])
-    t_stats.append(stats.ttest_ind(noretro[col],retro[col],)[0])
-p_vals = pd.Series(p_vals, index = retro.columns)
-t_stats = pd.Series(t_stats, index = retro.columns)
+# Bootstrap by hand and get confidence intervals of parameter estimates and AME -----------------------------
+## Set values and initialize arrays to output to
+breps = 1000 # number of bootstrap replications
+olsparamblist = np.zeros((breps,params))
+margblist = np.zeros((breps,params-1))
 
-## Set the row and column names
-rownames = pd.concat([pd.Series(['Monthly electricity consumption (kWh)','Square feet of home','Outdoor average temperature (\\textdegree F)', 'Observations']),
-                    pd.Series([' ',' ',' '])],axis = 1).stack() # Note this stacks an empty list to make room for stdevs
+## Get an index of the data we will sample by sampling with replacement
+bidx = np.random.choice(nobs3,(nobs3,breps)) # Generates random numbers on the interval [0,nobs3] and produces a nobs3 x breps sized array
 
-## Format means and std devs to display to two decimal places
-means_control = means_control.map('{:.2f}'.format)
-stdev_control = stdev_control.map('({:.2f})'.format)
-nobs_control = nobs_control.map('{:.0f}'.format)
+## Sample with replacement to get the size of the sample on each iteration
+for r in range(breps):
+    ### Sample the data
+    datab = data.iloc[bidx[:,r]]
+    
+    ### Perform the estimation
+    olsb = sm.OLS(datab['ln_electricity'],sm.add_constant(datab[['retrofit','ln_sqft','ln_temp']])).fit()
+    param_olsb = olsb.params.to_numpy() # save estimated parameters
+    param_olsb[1]=np.exp(param_olsb[1]) # convert retrofit coefficient (ln delta) to delta
+    
+    ### Compute the marginal effect
+    margb_1=datab.apply(lambda x: (param_olsb[1]-1)*x['electricity']/(param_olsb[1]**x['retrofit']),axis=1) # calculate AME for di
+    margb_2=datab.apply(lambda x: param_olsb[2]*x['electricity']/x['sqft'],axis=1) # calculate AME for sqft
+    margb_3=datab.apply(lambda x: param_olsb[3]*x['electricity']/x['temp'],axis=1) # calculate AME for temp
+    margb=[margb_1.mean(),margb_2.mean(),margb_3.mean()]
+    margblist[r,:]=margb
+    
+    ### Output the parameter estimates result
+    olsparamblist[r,:] = param_olsb
+    
+## Extract 2.5th and 97.5th percentile for each parameter
+lb_ols = np.percentile(olsparamblist,2.5,axis = 0,interpolation = 'lower')
+ub_ols = np.percentile(olsparamblist,97.5,axis = 0,interpolation = 'higher')
 
-means_treatment = means_treatment_1.map('{:.2f}'.format)
-stdev_treatment = stdev_treatment.map('({:.2f})'.format)
-nobs_treatment = nobs_treatment.map('{:.0f}'.format)
+## Extract 2.5th and 97.5th percentile for AMEs
+lb_marg = np.percentile(margblist,2.5,axis = 0,interpolation = 'lower')
+ub_marg = np.percentile(margblist,97.5,axis = 0,interpolation = 'higher')
 
-p_vals = p_vals.map('{:.3f}'.format)
-t_stats = t_stats.map('[{:.3f}]'.format)
+# Regression output table with CIs
+## Format parameter estimates and confidence intervals
+paramP_ols = np.round(param_ols,3)
 
-## Align std deviations under means and add observations
-col1 = pd.concat([means_control,stdev_control,nobs_control],axis = 1).stack()
-col2 = pd.concat([means_treatment,stdev_treatment,nobs_treatment],axis = 1).stack()
-col3 = pd.concat([p_vals,t_stats,pd.Series([' '])],axis = 1).stack()
+lbP_ols = pd.Series(np.round(lb_ols,3)) # Round to two decimal places and get a Pandas Series version
+ubP_ols = pd.Series(np.round(ub_ols,3))
+ci_ols = '[' + lbP_ols.map(str) + ', ' + ubP_ols.map(str) + ']'
 
-## Add column and row labels.  Convert to dataframe (helps when you export it)
-col = pd.DataFrame({'Control': col1, 'Treatment': col2, 'P-value': col3})
+## Format AME estimates and confidence intervals
+margP = np.round(marg,3)
+
+lbP_marg = pd.Series(np.round(lb_marg,3)) # Round to two decimal places and get a Pandas Series version
+ubP_marg = pd.Series(np.round(ub_marg,3))
+ci_marg = '[' + lbP_marg.map(str) + ', ' + ubP_marg.map(str) + ']'
+
+## Get parameter estimates output in order
+#order = [1,2,3,0]
+output_ols = pd.DataFrame(np.column_stack([paramP_ols,ci_ols]))
+col1=pd.concat([output_ols.stack(),pd.Series(nobs3)])
+
+## Get AME estimates output in order
+output_ame = pd.DataFrame(np.column_stack([margP,ci_marg]))
+output_ame.loc[len(output_ame.index)]=[' ',' '] # shift the dataframe down one row
+output_ame=output_ame.shift()
+output_ame.loc[0]=[' ',' ']
+col2=pd.concat([output_ame.stack(),pd.Series(nobs3)])
+
+## Row and column names
+rownames = pd.concat([pd.Series(['Constant','=1 if home received retrofit','Square feet of home','Outdoor average temperature (\\textdegree F)','Observations']),pd.Series([' ',' ',' ',' '])],axis = 1).stack() # Note this stacks an empty list to make room for CIs
+
+## Append CIs, # Observations, row and column names
+order = [1,2,3,0]
+col = pd.DataFrame({'Parameter estimates': col1, 'Average marginal effects estimates': col2})
+col.reindex(order)
 col.index = rownames
-col.to_latex(outputpath + '/table/table1.tex',column_format='lccc',escape=False)
+col.to_latex(outputpath + '/table/h31e.tex',column_format='lccc',escape=False)
 
-
-'''
-------------------------------------------------------------------------------
-Q1.2: Graphical Evidence
-------------------------------------------------------------------------------
-'''
-fig = sns.kdeplot(retro['electricity'], color="r")
-fig = sns.kdeplot(noretro['electricity'], color="b")
-plt.xlabel('Monthly electricity consumption (kWh)')
-plt.legend(labels = ['Retrofit','No retrofit'],loc = 'best')
-plt.show
-plt.savefig(outputpath + '/figure/2_hist.pdf',format='pdf')
-
-'''
-------------------------------------------------------------------------------
-Q1.3: OLS by hand
-------------------------------------------------------------------------------
-'''
-
-# Run with Dylan's data for Non-robust standard errors
-ols1=manualOLS(kwh[['retrofit','sqft','temp']],kwh['electricity'],method='byhand')
-ols1.report()
-
-ols2=manualOLS(kwh[['retrofit','sqft','temp']],kwh['electricity'],method='statsmodels')
-ols2.report()
-
-ols3=manualOLS(kwh[['retrofit','sqft','temp']],kwh['electricity'],method='leastsquares')
-ols3.report()
-
-## Compute estimates and standard errors by
-b_1 = ols1.beta().flatten()
-se_1 = ols1.beta_std().flatten()
-mse_1=ols1.MSE()
-b_1 = pd.Series(b_1, index = ['retrofit','sqft','temp','cons']).map('{:.3f}'.format)
-se_1 = pd.Series(se_1, index = ['retrofit','sqft','temp','cons']).map('({:.3f})'.format)
-mse_1=pd.Series(mse_1).map('{:.3f}'.format)
-
-
-## Compute estimates and standard errors
-b_2 = ols2.beta().flatten()
-se_2 = ols2.beta_std().flatten()
-mse_2=ols2.MSE()
-b_2 = pd.Series(b_2, index = ['retrofit','sqft','temp','cons']).map('{:.3f}'.format)
-se_2 = pd.Series(se_2, index = ['retrofit','sqft','temp','cons']).map('({:.3f})'.format)
-mse_2=pd.Series(mse_2).map('{:.3f}'.format)
-
-## Compute estimates and standard errors
-b_3 = ols3.beta().flatten()
-se_3 = ols3.beta_std().flatten()
-mse_3=ols3.MSE()
-b_3 = pd.Series(b_3, index = ['retrofit','sqft','temp','cons']).map('{:.3f}'.format)
-se_3 = pd.Series(se_3, index = ['retrofit','sqft','temp','cons']).map('({:.3f})'.format)
-mse_3=pd.Series(mse_3).map('{:.3f}'.format)
-
-## Set the row and column names
-rownames = pd.concat([pd.Series(['=1 if house received retrofit','Square feet of home','Outdoor average temperature (\\textdegree F)','Constant','M.S.E.']),
-                    pd.Series([' ',' ',' ',' '])],axis = 1).stack() # Note this stacks an empty list to make room for stdevs
-
-## Align std deviations under means and add observations
-col1 = pd.concat([b_1,se_1,mse_1],axis = 1).stack()
-col2 = pd.concat([b_2,se_2,mse_2],axis = 1).stack()
-col3 = pd.concat([b_3,se_3,mse_3],axis = 1).stack()
-
-## Add column and row labels.  Convert to dataframe (helps when you export it)
-col = pd.DataFrame({'By Hand': col1, 'Stats Model': col1, 'Least Squares': col3})
-col.index = rownames
-col.to_latex(outputpath + '/table/ols.tex',column_format='lccc',escape=False)
-
-# Run with Dylan's data for Heteroscedasticity robust standard errors
-ols1=manualOLS(kwh[['retrofit','sqft','temp']],kwh['electricity'],method='byhand',useRobust=True)
-ols1.report()
-
-ols2=manualOLS(kwh[['retrofit','sqft','temp']],kwh['electricity'],method='statsmodels',useRobust=True)  
-ols2.report()
-
-ols3=manualOLS(kwh[['retrofit','sqft','temp']],kwh['electricity'],method='leastsquares',useRobust=True)
-ols3.report()
-
-## Compute estimates and standard errors by
-b_1 = ols1.beta().flatten()
-se_1 = ols1.beta_std().flatten()
-mse_1=ols1.MSE()
-b_1 = pd.Series(b_1, index = ['retrofit','sqft','temp','cons']).map('{:.3f}'.format)
-se_1 = pd.Series(se_1, index = ['retrofit','sqft','temp','cons']).map('({:.3f})'.format)
-mse_1=pd.Series(mse_1).map('{:.3f}'.format)
-
-## Compute estimates and standard errors
-b_2 = ols2.beta().flatten()
-se_2 = ols2.beta_std().flatten()
-mse_2=ols2.MSE()
-b_2 = pd.Series(b_2, index = ['retrofit','sqft','temp','cons']).map('{:.3f}'.format)
-se_2 = pd.Series(se_2, index = ['retrofit','sqft','temp','cons']).map('({:.3f})'.format)
-mse_2=pd.Series(mse_2).map('{:.3f}'.format)
-
-## Compute estimates and standard errors
-b_3 = ols3.beta().flatten()
-se_3 = ols3.beta_std().flatten()
-mse_3=ols3.MSE()
-b_3 = pd.Series(b_3, index = ['retrofit','sqft','temp','cons']).map('{:.3f}'.format)
-se_3 = pd.Series(se_3, index = ['retrofit','sqft','temp','cons']).map('({:.3f})'.format)
-mse_3=pd.Series(mse_3).map('{:.3f}'.format)
-
-## Set the row and column names
-rownames = pd.concat([pd.Series(['=1 if house received retrofit','Square feet of home','Outdoor average temperature (\\textdegree F)','Constant','MSE']),
-                    pd.Series([' ',' ',' ',' '])],axis = 1).stack() # Note this stacks an empty list to make room for stdevs
-
-## Align std deviations under means and add observations
-col1 = pd.concat([b_1,se_1,mse_1],axis = 1).stack()
-col2 = pd.concat([b_2,se_2,mse_2],axis = 1).stack()
-col3 = pd.concat([b_3,se_3,mse_3],axis = 1).stack()
-
-## Add column and row labels.  Convert to dataframe (helps when you export it)
-col = pd.DataFrame({'By Hand': col1, 'Stats Model': col2, 'Least Squares': col3})
-col.index = rownames
-col.to_latex(outputpath + '/table/ols_robust.tex',column_format='lccc',escape=False)
+# Plot AME with error bars for sqft and temp -------------------------------------
+lowbar = np.array(marg[1:3] - lb_marg[1:3])
+highbar = np.array(ub_marg[1:3] - marg[1:3])
+plt.errorbar(y = marg[1:3], x = np.arange(params-2), yerr = [lowbar,highbar], fmt = 'o', capsize = 5)
+plt.ylabel('Average marginel effect estimates')
+plt.xticks(np.arange(params-2),['Square feet of home', 'Outdoor average temperature ($\degree$F)'])
+plt.xlim((-0.5,1.5)) # Scales the figure more nicely
+plt.axhline(linewidth=2, color='r')
+plt.savefig(outputpath + '/figure/ame.pdf',format='pdf')
