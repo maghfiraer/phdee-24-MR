@@ -72,23 +72,23 @@ where $y_i$ is the electricity use, $e$ is Euler's number or the base of the nat
     \\\textbf{Answer}\\
     Let's take the expectation of Equation \eqref{h3e1} conditional on $d_i$, we have
     \begin{align}
-        \E[y_i|d_i=1]&=e^\alpha\delta z_i^{\gamma}e^{\eta_i}\\
-        \E[y_i|d_i=0]&=e^\alpha z_i^{\gamma}e^{\eta_i}
+        \E[y_i|d_i=1,z_i]&=e^\alpha\delta z_i^{\gamma}e^{\eta_i}\\
+        \E[y_i|d_i=0,z_i]&=e^\alpha z_i^{\gamma}e^{\eta_i}
     \end{align}
     Dividing the first equation by the second equation, we have
     \begin{align}
-        \delta=\frac{\E[y_i|d_i=1]}{\E[y_i|d_i=0]} \label{h3e5} 
+        \delta=\frac{\E[y_i|d_i=1,z_i]}{\E[y_i|d_i=0,z_i]} \label{h3e5} 
     \end{align}
-    which means $\delta$ translates to the ratio of the expected electricity use of the treatment group to the expected electricity use of the control group. The intuitive interpretation of $\delta$ related to the context of the program is as follows. If the program improve the energy efficiency of the house, then the electricity use of the treatment group will be lower than the control group, and $\delta$ will be less than one. If the program does not improve the energy efficiency of the house, then the electricity use of the treatment group will be higher than the control group, and $\delta$ will be greater than one. If the program does not have any effect on the energy efficiency of the house, then the electricity use of the treatment group will be the same as the control group, and $\delta$ will be equal to one.
+    which means $\delta$ translates to the ratio of the expected electricity use of the treated house to the expected electricity use of the nontreated house conditional on other control variables. The intuitive interpretation of $\delta$ related to the context of the program is as follows. If the program improve the energy efficiency of the house, then the electricity use of the treatment group will be lower than the control group, and $\delta$ will be less than one. If the program does not improve the energy efficiency of the house, then the electricity use of the treatment group will be higher than the control group, and $\delta$ will be greater than one. If the program does not have any effect on the energy efficiency of the house, then the electricity use of the treatment group will be the same as the control group, and $\delta$ will be equal to one.
     \item Show that $\frac{\Delta y_i}{\Delta d_i}=\frac{\delta-1}{\delta^{d_i}}y_i$. What is the intuitive interpretation of $\frac{\Delta y_i}{\Delta d_i}$?
     \\\textbf{Answer}\\
     Note that since $d_i$ is a binary variable, the average marginal effect of $d_i$ is the difference in the expected value of $y_i$ between the treatment and control group, i.e:
-    \[\frac{\Delta y_i}{\Delta d_i}=\E[y_i|d_i=1]-\E[y_i|d_i=0].\]
+    \[\frac{\Delta y_i}{\Delta d_i}=\E[y_i|d_i=1,z_i]-\E[y_i|d_i=0,z_i].\]
     By using previous result in equation \eqref{h3e5}, we have 
     \begin{align}
-        \E[y_i|d_i=1]-\E[y_i|d_i=0]&=\delta\E[y_i|d_i=0]-\E[y_i|d_i=0]=(\delta-1)\E[y_i|d_i=0] \label{h3e6}
+        \E[y_i|d_i=1,z_i]-\E[y_i|d_i=0,z_i]&=\delta\E[y_i|d_i=0,z_i]-\E[y_i|d_i=0,z_i]=(\delta-1)\E[y_i|d_i=0,z_i] \label{h3e6}
     \end{align}
-    Since we only observed $y_i$ from the data we need to know what exactly is $\E[y_i|d_i=0]$. Since the relationship between $y_i$ and $d_i$ is non-linear, it might be useful to apply potential outcome framework with equation \eqref{h3e2}. Suppose $y_{0i}$ is the potential outcome of $y_i$ if $d_i=0$ and $y_{1i}$ is the potential outcome of $y_{1i}$ if $d_i=1$. From the underlying relationship, note that for every house $i$, we have $y_{1i}/y_{0i}=\delta$. Applying the potential outcome framework, we have
+    Since we only observed $y_i$ from the data we need to know what exactly is $\E[y_i|d_i=0]$. Since the relationship between $y_i$ and $d_i$ is non-linear, it might be useful to apply potential outcome framework with equation \eqref{h3e2}. Suppose $y_{0i}$ is the potential outcome of $y_i$ if $d_i=0$ and $y_{1i}$ is the potential outcome of $y_{1i}$ if $d_i=1$ conditional on $z_i$. From the underlying relationship, note that for every house $i$, we have $y_{1i}/y_{0i}=\delta$. Applying the potential outcome framework, we have
     \begin{align}
         \ln(y_i)=\ln(y_{0i})+[\ln(y_{1i})-\ln(y_{0i})]d_i
         \Leftrightarrow& \ln\left(\frac{y_i}{y_{0i}}\right)=d_i\ln\left(\frac{y_{1i}}{y_{0i}}\right)=d_i\ln(\delta) \notag\\
@@ -96,7 +96,7 @@ where $y_i$ is the electricity use, $e$ is Euler's number or the base of the nat
         \Leftrightarrow& y_{0i}=\frac{1}{\delta^{d_i}}y_i \label{h3e7}
     \end{align}
     Substituting equation \eqref{h3e7} to \eqref{h3e6}, we can obtain the average marginal effect of $d_i$ as follows:
-    \[\frac{\Delta y_i}{\Delta d_i}=\E[y_i|d_i=1]-\E[y_i|d_i=0]=\frac{\delta-1}{\delta^{d_i}}y_i.\]\qed
+    \[\frac{\Delta y_i}{\Delta d_i}=\E[y_i|d_i=1,z_i]-\E[y_i|d_i=0,z_i]=\frac{\delta-1}{\delta^{d_i}}y_i.\]\qed
 
     The intuitive interpretation of $\frac{\Delta y_i}{\Delta d_i}$ is the reduction in monthly electricity consumption in kWh if a house received a retrofit.
     \item Show that $\frac{\delta y_i}{\delta z_i}=\gamma\frac{y_i}{z_i}$. What is the intuitive interpretation of $\frac{\delta y_i}{\delta z_i}$ when $z_i$ is the size of the home in square feet?
