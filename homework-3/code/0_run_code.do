@@ -26,7 +26,7 @@ matrix drop _all
 	
 	* Select option to export log
 	
-	global export_log 1 // Set to 1 if you want to export log, 0 o/w
+	global export_log 0 // Set to 1 if you want to export log, 0 o/w
 
 	* Set the location of project directory location
 	
@@ -63,15 +63,40 @@ matrix drop _all
 	gen ln_elec=ln(electricity)
 	gen ln_sqft=ln(sqft)
 	gen ln_temp=ln(temp)
-	set seed 1
-	eststo parameter: boostrap alpha=exp(_b[retrofit]) gamma_sqft=_b[ln_sqft] gamma_temp=_b[ln_temp], reps(1000): reg ln_elec retrofit ln_sqft ln_temp
-	eststo parameter: boostrap alpha=exp(_b[retrofit]) gamma_sqft=_b[ln_sqft] gamma_temp=_b[ln_temp], reps(1000): reg ln_elec retrofit ln_sqft ln_temp
+	
+	eststo parameter: bootstrap cons=_b[_cons] delta=exp(_b[retrofit]) gamma_sqft=_b[ln_sqft] gamma_temp=_b[ln_temp], reps(1000) seed(1): reg ln_elec retrofit ln_sqft ln_temp, robust
+	capture program drop ameboot
+	program define ameboot, rclass
+	 preserve 
+	  bsample
+		regress ln_elec retrofit ln_sqft ln_temp, robust
+		scalar delta=exp(_b[retrofit])
+		scalar gamma_sqft=(_b[ln_sqft])
+		scalar gamma_temp=(_b[ln_temp])
+		gen dydd=(delta-1)*electricity/(delta^retrofit)
+		sum dydd
+		scalar mean1 = r(mean)
+		gen dyds=gamma_sqft*electricity/sqft
+		sum dyds
+		scalar mean2 = r(mean)
+		gen dydt=gamma_temp*electricity/temp
+		sum dydt
+		scalar mean3 = r(mean)
+		return scalar delta = mean1
+		return scalar gamma_sqft = mean2
+		return scalar gamma_temp = mean3
+	 restore
+	end
+	
+	eststo ame: bootstrap delta = r(delta) gamma_sqft = r(gamma_sqft) gamma_temp = r(gamma_temp), reps(1000) seed(1): ameboot
+	
 	
 	*** Using .tex
-	esttab paremter parameter using "$table_path\estimates_stata.tex", label replace ///
+	esttab parameter ame using "$table_path\estimates_stata.tex", label replace ///
 		cell( 	b(pattern(1 1) fmt(3))      ///
-				se(pattern(1 1) fmt(3) par) ) ///
+				ci(pattern(1 1) fmt(3) par([ ,  ])) ) ///
 		mtitle("Parameter Estimates" "AME Estimates") collabels(none) nostar nonum ///
+		coeflabels(cons "Constant" delta "=1 if home received retrofit" gamma_sqft "Square feet of home" gamma_temp "Outdoor average temperature (\textdegree F)") ///
 	stats(N, fmt(%15.0fc) label("Observations"))
 
 *********************************************************************************

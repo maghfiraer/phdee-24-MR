@@ -113,7 +113,7 @@ where $y_i$ is the electricity use, $e$ is Euler's number or the base of the nat
     \\\textbf{Answer}\\
     \begin{table}[H]\centering
         \begin{threeparttable}
-            \caption{Parameter and average marginal effect estimates}
+            \caption{Parameter and average marginal effect estimates from Python}
             \label{t1:estimates}
             \input{./table/h31e.tex}
             \begin{tablenotes}
@@ -121,12 +121,25 @@ where $y_i$ is the electricity use, $e$ is Euler's number or the base of the nat
             \end{tablenotes}
         \end{threeparttable}
         \end{table}
+
+        \begin{table}[H]\centering
+            \begin{threeparttable}
+                \caption{Parameter and average marginal effect estimates from Stata}
+                \label{t2:estimates}
+                \input{./table/estimates_stata.tex}
+                \begin{tablenotes}
+                \small \item Column 1 shows the estimates of $\alpha,\delta,\gamma_{sqft}$, and $\gamma_T$ parameter and their 95\% confidence intervals. Column 2 shows the average marginal effect estimates of the retrofit ($\frac{\Delta y_i}{\Delta d_i}$), square feet of home ($\frac{\delta y_i}{\delta sqft_i}$), and outdoor temperature ($\frac{\delta y_i}{\delta T_i}$) and their 95\% confidence intervals.
+                \end{tablenotes}
+            \end{threeparttable}
+            \end{table}
+    
+    The difference between Stata and Python result for AME estimates is very likely due to difference in the bootstrap sample randomization. Even if I set the seed in Stata and numpy the same, the realization is difference.
     \item Graph the \textbf{average marginal effects} of outdoor temperature and square feet of home with bands for their bootstrapped confidence intervals so that they are easy to interpret and compare.
     \\\textbf{Answer}\\
     \begin{figure}[H]
         \centering
         \includegraphics[scale = 0.7]{./figure/ame.pdf}
-        \caption{Average marginal effect estimates of outdoor temperature and square feet of home}
+        \caption{Average marginal effect estimates of outdoor temperature and square feet of home from Python}
         \label{f1:ame}
     \end{figure}
     The interpretation of the estimates in Figure \ref{f1:ame} is as follows. The larger the house size, the more electricity it consumes with an average additional consumption of around 0.6 kWh per additional square feet. Similarly, the higher the outdoor temperature, the more electricity a house consumes with the increase ranges from 0.5 to 7.4 kWh per one \textdegree F of increase.

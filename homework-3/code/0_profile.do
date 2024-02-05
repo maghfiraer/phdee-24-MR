@@ -58,7 +58,7 @@
 		local c_time_date = "`c(current_date)'"+"_" +"`c(current_time)'"
 		local time_string = subinstr("`c_time_date'", ":", "_", .)
 		local time_string = subinstr("`time_string'", " ", "_", .)
-		log using "$path\output\log\homework_1_`time_string'.log", replace
+		log using "$path\output\log\homework_3_`time_string'.log", replace
 		}
 
 *********************************************************************************

@@ -75,14 +75,16 @@ ub_marg = np.percentile(margblist,97.5,axis = 0,interpolation = 'higher')
 
 # Regression output table with CIs
 ## Format parameter estimates and confidence intervals
-paramP_ols = np.round(param_ols,3)
+paramP_ols = pd.Series(np.round(param_ols,3))
+paramP_ols = paramP_ols.map(str)
 
 lbP_ols = pd.Series(np.round(lb_ols,3)) # Round to two decimal places and get a Pandas Series version
 ubP_ols = pd.Series(np.round(ub_ols,3))
 ci_ols = '[' + lbP_ols.map(str) + ', ' + ubP_ols.map(str) + ']'
 
 ## Format AME estimates and confidence intervals
-margP = np.round(marg,3)
+margP = pd.Series(np.round(marg,3))
+margP = margP.map(str)
 
 lbP_marg = pd.Series(np.round(lb_marg,3)) # Round to two decimal places and get a Pandas Series version
 ubP_marg = pd.Series(np.round(ub_marg,3))

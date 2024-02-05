@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.9.18)  1 FEB 2024 10:59
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.9.18)  5 FEB 2024 14:01
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -402,14 +402,14 @@ Underfull \hbox (badness 10000) in paragraph at lines 112--123
 
  []
 
-[2]
+[2] (./table/estimates_stata.tex)
 <./figure/ame.pdf, id=45, 462.52798pt x 346.89601pt>
 File: ./figure/ame.pdf Graphic file (type pdf)
 <use ./figure/ame.pdf>
-Package pdftex.def Info: ./figure/ame.pdf  used on input line 128.
+Package pdftex.def Info: ./figure/ame.pdf  used on input line 141.
 (pdftex.def)             Requested size: 323.76736pt x 242.82555pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 124--131
+Underfull \hbox (badness 10000) in paragraph at lines 137--144
 
  []
 
@@ -417,12 +417,17 @@ Underfull \hbox (badness 10000) in paragraph at lines 124--131
 pdfTeX warning (ext4): destination with the same identifier (name{table.1}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.137 \end{document}
-                    {c:/texlive/2023/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}
+l.145     T
+           he interpretation of the estimates in Figure \ref{f1:ame} is as f...{c:/texlive/2023/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}
+pdfTeX warning (ext4): destination with the same identifier (name{table.2}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.145     T
+           he interpretation of the estimates in Figure \ref{f1:ame} is as f...] [4
 pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.137 \end{document}
+l.150 \end{document}
                      <./figure/ame.pdf>] (./homework-3-submission.aux)
  ***********
 LaTeX2e <2023-06-01> patch level 1
@@ -432,18 +437,18 @@ Package rerunfilecheck Info: File `homework-3-submission.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 10959 strings out of 474933
- 167755 string characters out of 5763787
+ 10968 strings out of 474933
+ 167957 string characters out of 5763787
  1941801 words of memory out of 5000000
- 32341 multiletter control sequences out of 15000+600000
+ 32345 multiletter control sequences out of 15000+600000
  564012 words of font info for 57 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,11n,79p,1033b,696s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on homework-3-submission.pdf (3 pages, 189624 bytes).
+Output written on homework-3-submission.pdf (4 pages, 191295 bytes).
 PDF statistics:
- 173 PDF objects out of 1000 (max. 8388607)
- 98 compressed objects within 1 object stream
- 21 named destinations out of 1000 (max. 500000)
+ 179 PDF objects out of 1000 (max. 8388607)
+ 102 compressed objects within 2 object streams
+ 23 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
