@@ -30,7 +30,7 @@ matrix drop _all
 
 	* Set the location of project directory location
 	
-	global path "C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-2"
+	global path "C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-3"
 	global data_path "$path\data"
 	global temp_path "$path\temp"
 	global code_path "$path\code" 
@@ -54,12 +54,25 @@ matrix drop _all
 *********************************************************************************
 * Q1 Run the given Python code from Shell (make sure dependency are all installed)
 	
-	!python 1_python_OLS.py
+	!python 1_python_estimates.py
 
 *********************************************************************************
 * Q2 Run the given Stata code
 
-	do "$code_path\2_stata_code.do"
+	import delimited "$data_path\kwh.csv", clear
+	gen ln_elec=ln(electricity)
+	gen ln_sqft=ln(sqft)
+	gen ln_temp=ln(temp)
+	set seed 1
+	eststo parameter: boostrap alpha=exp(_b[retrofit]) gamma_sqft=_b[ln_sqft] gamma_temp=_b[ln_temp], reps(1000): reg ln_elec retrofit ln_sqft ln_temp
+	eststo parameter: boostrap alpha=exp(_b[retrofit]) gamma_sqft=_b[ln_sqft] gamma_temp=_b[ln_temp], reps(1000): reg ln_elec retrofit ln_sqft ln_temp
+	
+	*** Using .tex
+	esttab paremter parameter using "$table_path\estimates_stata.tex", label replace ///
+		cell( 	b(pattern(1 1) fmt(3))      ///
+				se(pattern(1 1) fmt(3) par) ) ///
+		mtitle("Parameter Estimates" "AME Estimates") collabels(none) nostar nonum ///
+	stats(N, fmt(%15.0fc) label("Observations"))
 
 *********************************************************************************
 * End of code
