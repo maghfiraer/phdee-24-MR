@@ -1,0 +1,125 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage[letterpaper, portrait, margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage[flushleft]{threeparttable}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{dsfont}
+\hypersetup{
+colorlinks=true,
+    linkcolor=black,
+    filecolor=black,      
+    urlcolor=blue,
+    citecolor=black,
+}
+\usepackage{natbib}
+
+\usepackage{titlesec}
+\bibliographystyle{chicago}
+\newcommand{\bib}{references.bib}
+\newcommand\iid{\stackrel{\mathclap{iid}}{\sim}}
+\newcommand\asym{\stackrel{\mathclap{a}}{\sim}}
+\newcommand\convprob{\xrightarrow{p}}
+\newcommand\convdist{\xrightarrow{d}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\E}{\text{E}}
+\newcommand{\V}{\text{Var}}
+\newcommand{\Av}{\text{Avar}}
+\newcommand{\se}{\text{se}}
+\newcommand{\corr}{\text{Corr}}
+\newcommand{\cov}{\text{Cov}}
+\newcommand{\norm}{\text{Normal}}
+\newcommand{\indep}{\perp \!\!\! \perp}
+
+\begin{document}
+% The tex content below is similar to the given main.tex
+ 
+\title{Homework 4}
+\author{Environmental Economics II\\
+Maghfira Ramadhani}
+\date{\today}
+\maketitle
+
+\section*{Problem 1 Python}
+\begin{enumerate}
+\item Line Plot
+        \begin{figure}[H]
+        \centering
+        \includegraphics[scale = 0.7]{./figure/paralleltrend.pdf}
+        \caption{Bycatch by month plot}
+        \label{f1:paralleltrend}
+        \end{figure}
+
+\item DID estimates
+
+
+\begin{table}[H]\centering
+\begin{threeparttable}
+\caption{Parameter and average marginal effect estimates from Stata}
+\label{t1:didstimates}
+\input{./table/didcalculation.tex}
+\end{threeparttable}
+\end{table}
+
+\item Estimating DID using different specification in Python
+\begin{table}[H]\centering
+    \begin{threeparttable}
+    \caption{DID estimates from different specification}
+    \label{t2:didstimatesspecification}
+    \input{./table/reporttable1.tex}
+    \begin{tablenotes}
+        \small \item Standard errors are clustered at firm.
+    \end{tablenotes}
+    \end{threeparttable}
+\end{table}
+\begin{enumerate}
+    \item The following specification is used. 
+    \begin{align}
+        bycatch_{it} &= \alpha + \lambda_{t=2017}+ \gamma g(i) + \delta treat_{i,t} + \epsilon_{i,t} \label{e:spec1a}
+    \end{align}
+    By using sample from December 2017 and January 2018, the DID estimates is -9591.35 with a standard error of 3198.64. This means after the treatment started, the treated firms' bycatch yield is on average 9591.35 lbs less compared to the control group.
+    \item The following specification is used. 
+    \begin{align}
+        bycatch_{it} &= \alpha + \lambda_{t}+ \gamma g(i) + \delta treat_{i,t} + \epsilon_{i,t} \label{e:spec1b}
+    \end{align}
+    By using sample from January 2017 and December 2018, the DID estimates is -8956.78 with a standard error of 3135.04. This means after the treatment started, the treated firms' bycatch yield is on average 8956.78 lbs less compared to the control group. Using this spefication we are now comparing the average of the entire after treatment period with the average of the entire before treatment period average, instead of only using 1 month of observations. This specification is more robust in capturing common time trends or seasonality of bycatch yields between both treated and untreated firms.
+
+    \item The following specification is used. 
+    \begin{align}
+        bycatch_{it} &= \alpha + \lambda_{t}+ \gamma g(i) + \delta treat_{i,t} + \beta X_{i,t} + \epsilon_{i,t} \label{e:spec1b}
+    \end{align}
+    By using sample from January 2017 and December 2018, the DID estimates is -8436.28 with a standard error of 2795.47. In this specification, we include firm size, salmon yields, and shrimp yields as control variables. This specification is more robust in capturing common time trends or seasonality of bycatch yields between both treated and untreated firms, and also controlling for other factors that might affect bycatch yields.
+
+    \item Table \ref{t2:didstimatesspecification} show the DID estimates from the different specification shown in part (a), (b), and (c).
+    
+\end{enumerate}
+\end{enumerate} 
+
+\section*{Problem 2 Stata}
+\begin{enumerate}
+\item Estimating DID using different specification in Stata
+\begin{table}[H]\centering
+    \begin{threeparttable}
+    \caption{DID estimates from different methods in Stata}
+    \label{t3:stata_estimates}
+    \input{./table/estimates_stata.tex}
+    \begin{tablenotes}
+        \small \item Standard errors are clustered at firm.
+    \end{tablenotes}
+    \end{threeparttable}
+\end{table}
+\begin{enumerate}
+    \item The following specification is used.
+\end{enumerate}
+\end{enumerate}
+    
+\end{document}
