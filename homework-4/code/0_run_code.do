@@ -43,7 +43,9 @@ matrix drop _all
 	* Set the location of Python and R executable
 	
 	global RSCRIPT_PATH "C:\Program Files\R\R-4.2.2\bin\x64\Rscript.exe"
-	python set exec C:\Users\mramadhani3\AppData\Local\anaconda3\envs\economics\python.exe
+	*Change the following line to your Conda env, and uncomment the following line for first time run
+	*python set exec C:\Users\mramadhani3\AppData\Local\anaconda3\envs\economics\python.exe
+	
 	*python set userpath "C:\Users\mramadhani3\AppData\Local\anaconda3\Lib\site-packages" "C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-2\code"
 
 
@@ -84,7 +86,7 @@ matrix drop _all
 	est clear
 	eststo: reg bycatch t_* f_* treatit salmon shrimp firmsize, vce(cluster firm)
 	estadd local method "Firm indicators"
-	eststo: reg demean_bycatch demean_treatit demean_shrimp demean_salmon demean_firmsize
+	eststo: reg demean_bycatch demean_treatit demean_shrimp demean_salmon demean_firmsize, vce(cluster firm)
 	estadd local method "Within-transformation"
 	
 	
@@ -92,7 +94,7 @@ matrix drop _all
 	esttab using "$table_path\estimates_stata.tex", rename(demean_treatit treatit) label replace ///
 		keep(treatit) ///
 		b(2) se(2) ////
-		mtitle("(a)" "(b)") collabels(none) nostar nonum ///
+		mtitle("(a)" "(b)") collabels(none) nostar nonote nonum ///
 		coeflabels(treatit "DID estimates") ///
 		scalars("method Method") obslast
 

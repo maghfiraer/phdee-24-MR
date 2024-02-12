@@ -21,6 +21,7 @@ colorlinks=true,
     citecolor=black,
 }
 \usepackage{natbib}
+\usepackage{yhmath}
 
 \usepackage{titlesec}
 \bibliographystyle{chicago}
@@ -51,17 +52,15 @@ Maghfira Ramadhani}
 
 \section*{Problem 1 Python}
 \begin{enumerate}
-\item Line Plot
-        \begin{figure}[H]
-        \centering
-        \includegraphics[scale = 0.7]{./figure/paralleltrend.pdf}
-        \caption{Bycatch by month plot}
-        \label{f1:paralleltrend}
-        \end{figure}
+\item Figure \ref{f1:paralleltrend} shows that there's a parallel trend before the treatment started in Jan 2018. This is important to ensure that the treatment and control group are comparable before the treatment started.
+\begin{figure}[H]
+\centering
+\includegraphics[scale = 0.7]{./figure/paralleltrend.pdf}
+\caption{Bycatch by month plot}
+\label{f1:paralleltrend}
+\end{figure}
 
-\item DID estimates
-
-
+\item DID estimates by using sample analog
 \begin{table}[H]\centering
 \begin{threeparttable}
 \caption{Parameter and average marginal effect estimates from Stata}
@@ -77,7 +76,7 @@ Maghfira Ramadhani}
     \label{t2:didstimatesspecification}
     \input{./table/reporttable1.tex}
     \begin{tablenotes}
-        \small \item Standard errors are clustered at firm.
+        \small \item Standard errors are clustered at firm. I used pyfixest package for the estimation, the documentation is available at \url{https://github.com/s3alfisc/pyfixest}.
     \end{tablenotes}
     \end{threeparttable}
 \end{table}
@@ -99,7 +98,7 @@ Maghfira Ramadhani}
     \end{align}
     By using sample from January 2017 and December 2018, the DID estimates is -8436.28 with a standard error of 2795.47. In this specification, we include firm size, salmon yields, and shrimp yields as control variables. This specification is more robust in capturing common time trends or seasonality of bycatch yields between both treated and untreated firms, and also controlling for other factors that might affect bycatch yields.
 
-    \item Table \ref{t2:didstimatesspecification} show the DID estimates from the different specification shown in part (a), (b), and (c).
+    \item Table \ref{t2:didstimatesspecification} show the DID estimates from the different specification shown in part (a), (b), and (c). The estimates from part (a) is similar with the result from computing the sample analog in question 2. The estimates from part (b) is more precise than (a) due to the larger sample size. The estimates from part (c) is more precise than (b) due to the inclusion of control variables.
     
 \end{enumerate}
 \end{enumerate} 
@@ -119,6 +118,16 @@ Maghfira Ramadhani}
 \end{table}
 \begin{enumerate}
     \item The following specification is used.
+    \begin{align}
+        bycatch_{it} &= \alpha_i + \lambda_{t}+ \gamma g(i) + \delta treat_{i,t} + \beta X_{i,t} + \epsilon_{i,t} \label{e:spec2a}
+    \end{align}
+    The estimates is shown in Table \ref{t3:stata_estimates} column (a).
+    \item Let $\tilde{y}_{it}=y_{it}-\bar{y}_i$ denote the time-demeaned variable. The following specification which is equivalent with equation \eqref{e:spec2a} is used.
+    \begin{align}
+        \widetilde{bycatch}_{it} &= \delta \widetilde{treat}_{i,t} + \beta \tilde{X}_{i,t} + \tilde{\epsilon}_{i,t} \label{e:spec2b}
+    \end{align}
+    Note that due to the time demeaning, firmsize which is time-invariant control variable is dropped from the regression. The estimates is shown in Table \ref{t3:stata_estimates} column (b).
+    \item Comparing estimates from (b) to (a), it looks like the estimates from (b) is more precise than (a) due to the smaller standard errors. However, the time demeaning removes the time-invariant control variables, i.e. firm size, from the regression, which could be a problem if we are to identify the coefficient for those variable.
 \end{enumerate}
 \end{enumerate}
     

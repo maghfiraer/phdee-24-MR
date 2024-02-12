@@ -32,6 +32,7 @@ data_long['Group'] = np.where(data_long['treated'] == 1, "Treatment", "Control")
 
 # Question 1
 # Create line plot of bycatch over time
+plt.clf()
 sns.lineplot(data=data_long, x="date", y="bycatch", hue="Group")
 plt.xlabel('Month')
 plt.ylabel('Pounds of bycatch in a month')
