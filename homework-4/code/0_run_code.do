@@ -42,8 +42,9 @@ matrix drop _all
 
 	* Set the location of Python and R executable
 	
-	global RSCRIPT_PATH "C:\Program Files\R\R-4.2.2\bin\x64\Rscript.exe"
-	*Change the following line to your Conda env, and uncomment the following line for first time run
+	* global RSCRIPT_PATH "C:\Program Files\R\R-4.2.2\bin\x64\Rscript.exe"
+	
+	*Change line 48 to your Conda env, and uncomment the following line for first time run
 	*python set exec C:\Users\mramadhani3\AppData\Local\anaconda3\envs\economics\python.exe
 	
 	*python set userpath "C:\Users\mramadhani3\AppData\Local\anaconda3\Lib\site-packages" "C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-2\code"
