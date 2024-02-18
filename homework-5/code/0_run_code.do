@@ -1,6 +1,6 @@
 *********************************************************************************
 * AUTHOR		: MAGHFIRA RAMADHANI											*
-* PROJECT		: HOMEWORK 4													*
+* PROJECT		: HOMEWORK 5													*
 * COURSE		: ECON7103 Environmental Economics II							*
 * DESCRIPTION	: Main Code														*
 * INPUT			: NA	    													*
@@ -30,7 +30,7 @@ matrix drop _all
 
 	* Set the location of project directory location
 	
-	global path "C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-4"
+	global path "C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-5"
 	global data_path "$path\data"
 	global temp_path "$path\temp"
 	global code_path "$path\code" 
@@ -45,7 +45,7 @@ matrix drop _all
 	* global RSCRIPT_PATH "C:\Program Files\R\R-4.2.2\bin\x64\Rscript.exe"
 	
 	*Change line 48 to your Conda env, and uncomment the following line for first time run
-	python set exec C:\Users\mramadhani3\AppData\Local\anaconda3\envs\economics\python.exe
+	*python set exec C:\Users\mramadhani3\AppData\Local\anaconda3\envs\economics\python.exe
 	
 	*python set userpath "C:\Users\mramadhani3\AppData\Local\anaconda3\Lib\site-packages" "C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-2\code"
 
@@ -63,41 +63,21 @@ matrix drop _all
 *********************************************************************************
 * Q2 Run the Stata code
 
-	import delimited "$data_path\fishbycatch.csv", clear
-	reshape long shrimp salmon bycatch, i(firm) j(month)
-	tsset firm month
-	gen treatit=0
-	replace treatit=1 if month>=13 & treated==1
-	foreach m of num 1/24 {
-		gen t_`m'=0
-		replace t_`m'=1 if month==`m'
-	}
-	foreach f of num 1/50 {
-		gen f_`f'=0
-		replace f_`f'=1 if firm==`f'
-	}
-	
-	foreach x of varlist bycatch treatit shrimp salmon firmsize {
-	egen mean_`x'=mean(`x'), by(firm)
-	gen demean_`x'=`x' - mean_`x'
-	drop mean*
-	}
-	
+	import delimited "$data_path\instrumentalvehicles.csv", clear
 	
 	est clear
-	eststo: reg bycatch t_* f_* treatit salmon shrimp firmsize, vce(cluster firm)
-	estadd local method "Firm indicators"
-	eststo: reg demean_bycatch demean_treatit demean_shrimp demean_salmon demean_firmsize, vce(cluster firm)
-	estadd local method "Within-transformation"
-	
+	eststo: ivregress liml price car (mpg=weight), robust
+	weakivtest
+	estadd scalar f_stat=r(F_eff)	
+	estadd scalar t_crit=r(c_LIML_5) 
 	
 	*** Using .tex
-	esttab using "$table_path\estimates_stata.tex", rename(demean_treatit treatit) label replace ///
-		keep(treatit) ///
+	esttab using "$table_path\estimates_stata.tex", label replace ///
+		order(mpg car) keep(mpg car) ///
 		b(2) se(2) ////
-		mtitle("(a)" "(b)") collabels(none) nostar nonote nonum ///
-		coeflabels(treatit "DID estimates") ///
-		scalars("method Method") obslast
+		mtitle("IV LIML") collabels(none) nostar nonote nonum ///
+		coeflabels(mpg "Miles per gallon" car "=1 if the vehicle is sedan") ///
+		scalars("f_stat Montiel-Pflueger F-statistics" "t_crit LIML critical value for $\tau=5\%$") obslast
 
 *********************************************************************************
 * End of code
