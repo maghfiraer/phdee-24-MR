@@ -30,7 +30,7 @@ matrix drop _all
 
 	* Set the location of project directory location
 	
-	global path "C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-5"
+	global path "C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-6"
 	global data_path "$path\data"
 	global temp_path "$path\temp"
 	global code_path "$path\code" 
