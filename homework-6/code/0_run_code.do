@@ -69,12 +69,12 @@ matrix drop _all
 	order time id treatment
 	
 	* Generate treatment cohort manual
-	bysort id treatment: egen first_treated=min(time) if treatment==1
+	bysort id treatment: egen double first_treated=min(time) if treatment==1
 	bysort id (first_treated): replace first_treated=first_treated[1] if missing(first_treated)
 	format first_treated %tc
 	
 	* Generate treatment cohort variable using canned procedure from csdid
-	egen cohort=csgvar(treatment), ivar(id) tvar(time)
+	egen double cohort=csgvar(treatment), ivar(id) tvar(time)
 	format cohort %tc
 	
 	* Both of these cohort variable are similar
@@ -123,11 +123,11 @@ matrix drop _all
 	
 	* Generate cohort
 	* Generate treatment cohort manual
-	bysort id treatment: egen first_treated=min(day) if treatment==1
+	bysort id treatment: egen double first_treated=min(day) if treatment==1
 	bysort id (first_treated): replace first_treated=first_treated[1] if missing(first_treated)
 	
 	* Generate treatment cohort variable using canned procedure from csdid
-	egen cohort=csgvar(treatment), ivar(id) tvar(day)
+	egen double cohort=csgvar(treatment), ivar(id) tvar(day)
 	
 	* Both of these cohort variable are similar
 	count if cohort==first_treated
