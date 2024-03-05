@@ -26,7 +26,7 @@ matrix drop _all
 	
 	* Select option to export log
 	
-	global export_log 0 // Set to 1 if you want to export log, 0 o/w
+	global export_log 1 // Set to 1 if you want to export log, 0 o/w
 
 	* Set the location of project directory location
 	
@@ -58,7 +58,7 @@ matrix drop _all
 * Q1 Run the given Python code
 	
 	*!python 1_python_estimates.py //Call from shell
-	python script "$code_path\1_python_estimates.py" //Call from pystata
+	*python script "$code_path\1_python_estimates.py" //Call from pystata
 	
 *********************************************************************************
 * Q2 Run the Stata code
@@ -66,7 +66,7 @@ matrix drop _all
 	import delimited "$data_path\instrumentalvehicles.csv", clear
 	
 	* First stage
-	rdrobust mpg length, c(225) p(1) covs(car)
+	rdrobust mpg length, c(225) p(1) //covs(car)
 	rdplot mpg length, /// if inrange(length,225-`e(h_l)',225+`e(h_r)'), ///
 	c(225) kernel(triangular) covs(car) p(1) genvars ///
 	graph_options(ytitle(Fuel efficiency (mpg)) ///
@@ -86,6 +86,13 @@ matrix drop _all
 		star(* .1 ** .05 *** .01) ///
 		b(2) se(2) ar2 obslast mtitles("Second-stage estimates") nonum ///
 		coeflabels(mpg_hat "Miles per gallon" car "=1 if the vehicle is sedan")
+		
+	* Checking exclusion restriction
+	* Plotting first stage residual vs car type
+	gen fs_resid = mpg_hat - mpg
+	twoway (hist fs_resid if car==1, frac lcolor(gs12) fcolor(gs12)) ///
+		   (hist fs_resid if car==0, frac fcolor(none) lcolor(red)), xtitle("First-stage Residuals") ytitle("Density") legend(order(1 "Sedan" 2 "SUV" ) position(0) bplacement(neast))
+	graph export "$figure_path\exclusion.pdf", replace
 
 *********************************************************************************
 * End of code
