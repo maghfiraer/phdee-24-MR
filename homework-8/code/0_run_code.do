@@ -26,7 +26,7 @@ matrix drop _all
 	
 	* Select option to export log
 	
-	global export_log 0 // Set to 1 if you want to export log, 0 o/w
+	global export_log 1 // Set to 1 if you want to export log, 0 o/w
 
 	* Set the location of project directory location
 	
@@ -89,8 +89,7 @@ matrix drop _all
 	replace year2020=1 if year==2020
 	drop if year<2019
 	encode zone, gen(zone_fac)
-	drop if inrange(month,1,2)
-	teffects nnmatch (l_mw temp pcp) (year2020) if year>2018, metric(maha) ematch(i.zone_fac i.month i.dow i.hour) biasadj(temp pcp) generate(match)
+	teffects nnmatch (l_mw temp pcp) (year2020), metric(maha) ematch(i.zone_fac i.month i.dow i.hour) biasadj(temp pcp) generate(match)
 	predict l_mwhat, po tlevel(0)
 	
 	* Q3.(a) 
