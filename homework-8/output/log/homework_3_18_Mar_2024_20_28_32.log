@@ -1,0 +1,179 @@
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-8\output\log\homework_3_18_Mar_2024_20_28_32.log
+  log type:  text
+ opened on:  18 Mar 2024, 20:28:32
+.                 }
+
+. 
+. *********************************************************************************
+. 
+end of do-file
+
+. 
+. *********************************************************************************
+. * Q1 Run the Stata code
+. *********************************************************************************
+. 
+.         use "$data_path\electric_matching", clear
+
+.         
+.         * Generate log of outcome variable
+.         gen l_mw=log(mw)
+
+.         
+.         * Generate treatment dummy
+.         format date %td
+
+.         gen treatment=0
+
+.         replace treatment=1 if date>mdy(3,1,2020)
+(14,640 real changes made)
+
+.         
+.         * Save the processed data_path
+.         save "$data_path\electric_matching_use", replace
+(file C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-8\data\electric_matching_use.dta not found)
+file C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-8\data\electric_matching_use.dta saved
+
+.         
+.         * Q1.(a) Estimate treatment in equation (1)
+.         ivreghdfe l_mw treatment temp pcp, absorb(zone month dow hour) robust
+(MWFE estimator converged in 3 iterations)
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity
+
+                                                      Number of obs =   122718
+                                                      F(  3,122673) =   776.92
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  2483.592308                Centered R2   =   0.0218
+Total (uncentered) SS   =  2483.592308                Uncentered R2 =   0.0218
+Residual SS             =  2429.394459                Root MSE      =    .1407
+
+------------------------------------------------------------------------------
+             |               Robust
+        l_mw | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |  -.0656023   .0013609   -48.21   0.000    -.0682696   -.0629349
+        temp |   .0002408   .0000471     5.11   0.000     .0001484    .0003331
+         pcp |  -.0184526   .0120253    -1.53   0.125     -.042022    .0051168
+------------------------------------------------------------------------------
+Included instruments: treatment temp pcp
+Partialled-out:       _cons
+                      nb: total SS, model F and R2s are after partialling-out;
+                          any small-sample adjustments include partialled-out
+                          variables in regressor count K
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+        zone |         2           0           2     |
+       month |        12           1          11     |
+         dow |         7           1           6    ?|
+        hour |        24           1          23    ?|
+-----------------------------------------------------+
+? = number of redundant parameters may be higher
+
+.         
+.         * Q1.(b) Estimate matching estimator
+.         encode zone, gen(zone_fac)
+
+.         drop if inrange(month,1,2)
+(19,918 observations deleted)
+
+.         teffects nnmatch (l_mw temp pcp) (treatment), metric(maha) ematch(i.zone_fac i.month i.dow i.hour)
+
+Treatment-effects estimation                   Number of obs      =    102,800
+Estimator      : nearest-neighbor matching     Matches: requested =          1
+Outcome model  : matching                                     min =          1
+Distance metric: Mahalanobis                                  max =          8
+------------------------------------------------------------------------------
+             |              AI robust
+        l_mw | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ATE          |
+   treatment |
+   (1 vs 0)  |  -.0703976   .0010042   -70.10   0.000    -.0723657   -.0684294
+------------------------------------------------------------------------------
+
+.         teffects nnmatch (l_mw temp pcp) (treatment), metric(maha) ematch(i.zone_fac i.month i.dow i.hour) biasadj(temp pcp)
+
+Treatment-effects estimation                   Number of obs      =    102,800
+Estimator      : nearest-neighbor matching     Matches: requested =          1
+Outcome model  : matching                                     min =          1
+Distance metric: Mahalanobis                                  max =          8
+------------------------------------------------------------------------------
+             |              AI robust
+        l_mw | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ATE          |
+   treatment |
+   (1 vs 0)  |  -.0811733   .0010594   -76.62   0.000    -.0832496    -.079097
+------------------------------------------------------------------------------
+
+.         
+.         * Q2.(a) Estimate treatment in equation (2)
+.         use "$data_path\electric_matching_use", clear
+
+.         ivreghdfe l_mw treatment temp pcp, absorb(zone month dow hour year) robust
+(MWFE estimator converged in 3 iterations)
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity
+
+                                                      Number of obs =   122718
+                                                      F(  3,122667) =    59.48
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  2378.021163                Centered R2   =   0.0016
+Total (uncentered) SS   =  2378.021163                Uncentered R2 =   0.0016
+Residual SS             =  2374.188015                Root MSE      =    .1391
+
+------------------------------------------------------------------------------
+             |               Robust
+        l_mw | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |   .0235563   .0027058     8.71   0.000      .018253    .0288597
+        temp |   .0004995   .0000469    10.64   0.000     .0004075    .0005915
+         pcp |  -.0232368   .0116863    -1.99   0.047    -.0461418   -.0003318
+------------------------------------------------------------------------------
+Included instruments: treatment temp pcp
+Partialled-out:       _cons
+                      nb: total SS, model F and R2s are after partialling-out;
+                          any small-sample adjustments include partialled-out
+                          variables in regressor count K
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+        zone |         2           0           2     |
+       month |        12           1          11     |
+         dow |         7           1           6    ?|
+        hour |        24           1          23    ?|
+        year |         7           1           6    ?|
+-----------------------------------------------------+
+? = number of redundant parameters may be higher
+
+.         
+.         
+.         
+. 
+. *********************************************************************************
+. * End of code
+. if $export_log == 1{
+.         log close
+      name:  <unnamed>
+       log:  C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-8\output\log\homework_3_18_Mar_2024_20_28_32.log
+  log type:  text
+ closed on:  18 Mar 2024, 20:32:03
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

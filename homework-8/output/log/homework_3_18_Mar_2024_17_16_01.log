@@ -1,0 +1,260 @@
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-8\output\log\homework_3_18_Mar_2024_17_16_01.log
+  log type:  text
+ opened on:  18 Mar 2024, 17:16:01
+.                 }
+
+. 
+. *********************************************************************************
+. 
+end of do-file
+
+. 
+. *********************************************************************************
+. * Q1 Run the given Python code
+.         
+.         *!python 1_python_estimates.py //Call from shell
+.         *python script "$code_path\1_python_estimates.py" //Call from pystata
+.         
+. *********************************************************************************
+. * Q2 Run the Stata code
+. 
+.         use "$data_path\electric_matching", clear
+
+. 
+end of do-file
+
+. do "C:\Users\MRAMAD~1\AppData\Local\Temp\STD17608_000000.tmp"
+
+.         gen l_mw=log(mw)
+
+. 
+end of do-file
+
+. format date %td
+
+. do "C:\Users\MRAMAD~1\AppData\Local\Temp\STD17608_000000.tmp"
+
+.         format date %td
+
+.         gen treatment=0
+
+.         replace treatment=1 if date>mdy(3,1,2020)
+(14,640 real changes made)
+
+. 
+end of do-file
+
+. do "C:\Users\MRAMAD~1\AppData\Local\Temp\STD17608_000000.tmp"
+
+.         ivreghdfe l_mw treatment temp pcp, absorb(zone month dow hour) robust
+(MWFE estimator converged in 3 iterations)
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity
+
+                                                      Number of obs =   122718
+                                                      F(  3,122673) =   776.92
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  2483.592308                Centered R2   =   0.0218
+Total (uncentered) SS   =  2483.592308                Uncentered R2 =   0.0218
+Residual SS             =  2429.394459                Root MSE      =    .1407
+
+------------------------------------------------------------------------------
+             |               Robust
+        l_mw | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |  -.0656023   .0013609   -48.21   0.000    -.0682696   -.0629349
+        temp |   .0002408   .0000471     5.11   0.000     .0001484    .0003331
+         pcp |  -.0184526   .0120253    -1.53   0.125     -.042022    .0051168
+------------------------------------------------------------------------------
+Included instruments: treatment temp pcp
+Partialled-out:       _cons
+                      nb: total SS, model F and R2s are after partialling-out;
+                          any small-sample adjustments include partialled-out
+                          variables in regressor count K
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+        zone |         2           0           2     |
+       month |        12           1          11     |
+         dow |         7           1           6    ?|
+        hour |        24           1          23    ?|
+-----------------------------------------------------+
+? = number of redundant parameters may be higher
+
+. 
+end of do-file
+
+. ssc install nnmatch
+checking nnmatch consistency and verifying not already installed...
+installing into C:\Users\mramadhani3\ado\plus\...
+installation complete.
+
+. teffects nnmatch (temp pcp) (treatment), maha ematch(zone month dow hour)
+option maha is not allowed
+r(198);
+
+. teffects nnmatch (temp pcp) (treatment), metric(maha) ematch(zone month dow hour)
+string variables not allowed in varlist;
+zone is a string variable
+in option ematch()
+r(109);
+
+.  teffects nnmatch (temp pcp) (treatment), metric(maha) ematch(i.zone i.month i.dow i.hour)
+zone:  string variables may not be used as factor variables
+in option ematch()
+r(109);
+
+. recode zone
+recode only allows numeric variables
+r(108);
+
+. destring zone
+must specify either generate or replace option
+r(198);
+
+. destring zone, gen(zone_fac)
+zone: contains nonnumeric characters; no generate
+
+. encode zone, gen(zone_fac)
+
+. teffects nnmatch (temp pcp) (treatment), metric(maha) ematch(i.zone_fac i.month i.dow i.hour)
+no exact matches for observation 1; use option osample() to identify all observations with
+deficient matches
+r(459);
+
+. teffects nnmatch (temp pcp) (treatment), metric(maha) ematch(i.zone_fac i.month i.dow i.hour) if
+>  !inrange(month,1,2)
+options if ! inrange(month,1,2) are not allowed
+r(198);
+
+. teffects nnmatch (temp pcp) (treatment), metric(maha) ematch(
+> i.zone_fac i.month i.dow i.hour) if inrange(month,3,12)
+options if inrange(month,3,12) are not allowed
+r(198);
+
+. drop if inrange(month,1,2)
+(19,918 observations deleted)
+
+. teffects nnmatch (temp pcp) (treatment), metric(maha) ematch(
+> i.zone_fac i.month i.dow i.hour)
+
+Treatment-effects estimation                   Number of obs   
+>    =    102,800
+Estimator      : nearest-neighbor matching     Matches: request
+> ed                                                           
+>    =          1
+Outcome model  : matching                                     m
+> in                                                           
+>    =          1
+Distance metric: Mahalanobis                                  m
+> ax                                                           
+>    =         28
+---------------------------------------------------------------
+> ---------------
+             |              AI robust
+        temp | Coefficient  std. err.      z    P>|z|     [95% 
+> con                                                          
+>    f. interval]
+-------------+-------------------------------------------------
+> ---------------
+ATE          |
+   treatment |
+   (1 vs 0)  |   1.434465   .0791729    18.12   0.000     1.279
+> 289                                                          
+>        1.589641
+---------------------------------------------------------------
+> ---------------
+
+. teffects nnmatch (temp pcp) (treatment), metric(maha) ematch(i.zone_fac i.month i.dow i.hour)
+
+Treatment-effects estimation                   Number of obs      =    102,800
+Estimator      : nearest-neighbor matching     Matches: requested =          1
+Outcome model  : matching                                     min =          1
+Distance metric: Mahalanobis                                  max =         28
+------------------------------------------------------------------------------
+             |              AI robust
+        temp | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ATE          |
+   treatment |
+   (1 vs 0)  |   1.434465   .0791729    18.12   0.000     1.279289    1.589641
+------------------------------------------------------------------------------
+
+. teffects nnmatch (temp pcp) (treatment), metric(maha) ematch(i.zone_fac i.month i.dow i.hour) biasadj(temp pcp)
+the outcome variable temp cannot be specified in the bias-adjustment varlist biasadj(varlist)
+r(198);
+
+. teffects nnmatch (l_mw temp pcp) (treatment), metric(maha) ematch(i.zone_fac i.month i.dow i.hour)
+
+Treatment-effects estimation                   Number of obs      =    102,800
+Estimator      : nearest-neighbor matching     Matches: requested =          1
+Outcome model  : matching                                     min =          1
+Distance metric: Mahalanobis                                  max =          8
+------------------------------------------------------------------------------
+             |              AI robust
+        l_mw | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ATE          |
+   treatment |
+   (1 vs 0)  |  -.0703976   .0010042   -70.10   0.000    -.0723657   -.0684294
+------------------------------------------------------------------------------
+
+. teffects nnmatch (l_mw temp pcp) (treatment), metric(maha) ematch(i.zone_fac i.month i.dow i.hour) biasadj(temp pcp)
+
+Treatment-effects estimation                   Number of obs      =    102,800
+Estimator      : nearest-neighbor matching     Matches: requested =          1
+Outcome model  : matching                                     min =          1
+Distance metric: Mahalanobis                                  max =          8
+------------------------------------------------------------------------------
+             |              AI robust
+        l_mw | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ATE          |
+   treatment |
+   (1 vs 0)  |  -.0811733   .0010594   -76.62   0.000    -.0832496    -.079097
+------------------------------------------------------------------------------
+
+. do "C:\Users\MRAMAD~1\AppData\Local\Temp\STD17608_000000.tmp"
+
+.         use "$data_path\electric_matching", clear
+
+. 
+end of do-file
+
+. ivreghdfe l_mw treatment temp pcp, absorb(zone month dow hour year) robust
+variable l_mw not found
+r(111);
+
+. do "C:\Users\MRAMAD~1\AppData\Local\Temp\STD17608_000000.tmp"
+
+. *********************************************************************************
+. * AUTHOR                : MAGHFIRA RAMADHANI                                                                                    *
+. * PROJECT               : HOMEWORK 8                                                                                                    *
+. * COURSE                : ECON7103 Environmental Economics II                                                   *
+. * DESCRIPTION   : Main Code                                                                                                             *
+. * INPUT                 : NA                                                                                                            *
+. * OUTPUT                : .\output\table, .\output\figure, .\output\log                                 *
+. * STATA VERSION : Stata/MP 18.0                                                                                                 *
+. *********************************************************************************
+. 
+. clear
+
+. version 18.0
+
+. macro drop _all
+
+. set linesize 255
+
+. set more off, permanently
+(set more preference recorded)
+
+. capture log close
