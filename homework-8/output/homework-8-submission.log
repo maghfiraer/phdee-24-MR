@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.9.18)  18 MAR 2024 20:46
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.9.18)  19 MAR 2024 06:11
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -454,17 +454,7 @@ File: OMXyhex.fd
 File: OMXyhex.fd 2013/07/03 v1.1 YH's humble contribution to TeX maths (NP)
 ) [1
 
-{c:/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
-pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.84 \end{document}
-                   
-pdfTeX warning (ext4): destination with the same identifier (name{table.1}) has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.84 \end{document}
-                   ] (./homework-8-submission.aux)
+{c:/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./homework-8-submission.aux)
  ***********
 LaTeX2e <2023-06-01> patch level 1
 L3 programming layer <2023-08-29>
@@ -473,18 +463,18 @@ Package rerunfilecheck Info: File `homework-8-submission.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 11516 strings out of 474933
- 174643 string characters out of 5763787
+ 11498 strings out of 474933
+ 174308 string characters out of 5763787
  1928801 words of memory out of 5000000
- 32886 multiletter control sequences out of 15000+600000
+ 32868 multiletter control sequences out of 15000+600000
  564977 words of font info for 61 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,6n,79p,696b,434s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on homework-8-submission.pdf (1 page, 67294 bytes).
+Output written on homework-8-submission.pdf (1 page, 66579 bytes).
 PDF statistics:
- 51 PDF objects out of 1000 (max. 8388607)
- 37 compressed objects within 1 object stream
+ 50 PDF objects out of 1000 (max. 8388607)
+ 36 compressed objects within 1 object stream
  12 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
