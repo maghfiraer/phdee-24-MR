@@ -1,0 +1,83 @@
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-8\output\log\homework_3_18_Mar_2024_20_25_53.log
+  log type:  text
+ opened on:  18 Mar 2024, 20:25:53
+.                 }
+
+. 
+. *********************************************************************************
+. 
+end of do-file
+
+. 
+. *********************************************************************************
+. * Q1 Run the Stata code
+. *********************************************************************************
+. 
+.         use "$data_path\electric_matching", clear
+
+.         
+.         * Generate log of outcome variable
+.         gen l_mw=log(mw)
+
+.         
+.         * Generate treatment dummy
+.         format date %td
+
+.         gen treatment=0
+
+.         replace treatment=1 if date>mdy(3,1,2020)
+(14,640 real changes made)
+
+. 
+end of do-file
+
+. encode zone, replace
+option replace not allowed
+r(198);
+
+. encode zone
+invalid syntax
+r(198);
+
+. encode zone, gen(zone_fac)
+
+. do "C:\Users\MRAMAD~1\AppData\Local\Temp\STD17608_000000.tmp"
+
+. *************************************************************
+> ********************
+. * AUTHOR                : MAGHFIRA RAMADHANI                 
+>                                                              
+>       *
+. * PROJECT               : HOMEWORK 8                         
+>                                                              
+>               *
+. * COURSE                : ECON7103 Environmental Economics II
+>                                                    *
+. * DESCRIPTION   : Main Code                                  
+>                                                              
+>               *
+. * INPUT                 : NA                                 
+>                                                              
+>               *
+. * OUTPUT                : .\output\table, .\output\figure, .\
+> output\log                                 *
+. * STATA VERSION : Stata/MP 18.0                              
+>                                                              
+>       *
+. *************************************************************
+> ********************
+. 
+. clear
+
+. version 18.0
+
+. macro drop _all
+
+. set linesize 255
+
+. set more off, permanently
+(set more preference recorded)
+
+. capture log close

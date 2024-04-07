@@ -1,0 +1,143 @@
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-7\output\log\homework_3__4_Mar_2024_21_01_16.log
+  log type:  text
+ opened on:   4 Mar 2024, 21:01:16
+.                 }
+
+. 
+. *********************************************************************************
+. 
+end of do-file
+
+. 
+. *********************************************************************************
+. * Q1 Run the given Python code
+.         
+.         *!python 1_python_estimates.py //Call from shell
+.         *python script "$code_path\1_python_estimates.py" //Call from pystata
+.         
+. *********************************************************************************
+. * Q2 Run the Stata code
+. 
+.         import delimited "$data_path\instrumentalvehicles.csv", clear
+(encoding automatically selected: ISO-8859-2)
+(6 vars, 1,000 obs)
+
+.         
+.         * First stage
+.         rdrobust mpg length, c(225) p(1) //covs(car)
+
+Sharp RD estimates using local polynomial regression.
+
+    Cutoff c = 225 | Left of c  Right of c            Number of obs =       1000
+-------------------+----------------------            BW type       =      mserd
+     Number of obs |       720         280            Kernel        = Triangular
+Eff. Number of obs |       234         176            VCE method    =         NN
+    Order est. (p) |         1           1
+    Order bias (q) |         2           2
+       BW est. (h) |    27.401      27.401
+       BW bias (b) |    42.454      42.454
+         rho (h/b) |     0.645       0.645
+
+Outcome: mpg. Running variable: length.
+--------------------------------------------------------------------------------
+            Method |   Coef.    Std. Err.    z     P>|z|    [95% Conf. Interval]
+-------------------+------------------------------------------------------------
+      Conventional | -7.2792     1.4191   -5.1296  0.000   -10.0606     -4.49792
+            Robust |     -          -     -4.1286  0.000   -10.3017     -3.66928
+--------------------------------------------------------------------------------
+
+.         rdplot mpg length, /// if inrange(length,225-`e(h_l)',225+`e(h_r)'), ///
+>         c(225) kernel(triangular) covs(car) p(1) genvars ///
+>         graph_options(ytitle(Fuel efficiency (mpg)) ///
+>         xtitle(Vehicle length (in)) graphregion(color(white)) legend(off))
+
+RD Plot with evenly spaced mimicking variance number of bins using spacings estimators.
+
+       Cutoff c = 225 | Left of c  Right of c        Number of obs  =       1000
+----------------------+----------------------        Kernel         = Triangular
+        Number of obs |       720         280
+   Eff. Number of obs |       720         280
+  Order poly. fit (p) |         1           1
+     BW poly. fit (h) |   181.037      96.893
+ Number of bins scale |     1.000       1.000
+
+Outcome: mpg. Running variable: length.
+---------------------------------------------
+                      | Left of c  Right of c
+----------------------+----------------------
+        Bins selected |        23          23
+   Average bin length |     7.871       4.213
+    Median bin length |     7.871       4.213
+----------------------+----------------------
+    IMSE-optimal bins |         7           5
+  Mimicking Var. bins |        23          23
+----------------------+----------------------
+Rel. to IMSE-optimal: | 
+        Implied scale |     3.286       4.600
+    WIMSE var. weight |     0.027       0.010
+    WIMSE bias weight |     0.973       0.990
+---------------------------------------------
+
+Covariate-adjusted estimates. Additional covariates included: 1
+
+.         
+.         * Export graph
+.         graph export "$figure_path\RD.pdf", replace
+file C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-7\output\figure\RD.pdf saved as PDF format
+
+.         
+.         rename rdplot_hat_y mpg_hat
+
+.         
+.         est clear
+
+.         eststo: reg price mpg_hat car, robust
+
+Linear regression                               Number of obs     =      1,000
+                                                F(2, 997)         =     135.66
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.2208
+                                                Root MSE          =     3427.2
+
+------------------------------------------------------------------------------
+             |               Robust
+       price | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     mpg_hat |   157.4307   26.67975     5.90   0.000     105.0758    209.7856
+         car |   -3674.49   224.2535   -16.39   0.000    -4114.552   -3234.427
+       _cons |   17408.09   773.3063    22.51   0.000     15890.59    18925.58
+------------------------------------------------------------------------------
+(est1 stored)
+
+.         
+.         *** Using .tex
+.         esttab using "$table_path\estimates_stata.tex", label replace ///
+>                 order(mpg_hat car) keep(mpg_hat car) ///
+>                 star(* .1 ** .05 *** .01) ///
+>                 b(2) se(2) ar2 obslast mtitles("Second-stage estimates") nonum ///
+>                 coeflabels(mpg_hat "Miles per gallon" car "=1 if the vehicle is sedan")
+(output written to C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-7\output\table\estimates_stata.tex)
+
+.                 
+.         * Checking exclusion restriction
+.         * Plotting first stage residual vs car type
+.         gen fs_resid = mpg_hat - mpg
+
+.         twoway (hist fs_resid if car==1, frac lcolor(gs12) fcolor(gs12)) ///
+>                    (hist fs_resid if car==0, frac fcolor(none) lcolor(red)), xtitle("First-stage Residuals") ytitle("Density") legend(order(1 "Sedan" 2 "SUV" ) position(0) bplacement(neast))
+
+.         graph export "$figure_path\exclusion.pdf", replace
+file C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-7\output\figure\exclusion.pdf saved as PDF format
+
+. 
+. *********************************************************************************
+. * End of code
+. if $export_log == 1{
+.         log close
+      name:  <unnamed>
+       log:  C:\Users\mramadhani3\OneDrive - Georgia Institute of Technology\Documents\Spring-24\environmental-econ-ii\phdee-24-MR\homework-7\output\log\homework_3__4_Mar_2024_21_01_16.log
+  log type:  text
+ closed on:   4 Mar 2024, 21:01:18
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
